@@ -85,17 +85,21 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
-  if (!(username || email)) {
-    throw new ApiError(400, "Username or email are required");
+  
+  if (!username && !email) {
+    throw new ApiError(400, "Username or email is required");
   }
+
   const user = await User.findOne({ $or: [{ email }, { username }] });
   if (!user) {
     throw new ApiError(401, "Invalid user. User not found");
   }
+
   const isPasswordValid = await user.isPasswordCorrect(password);
   if (!isPasswordValid) {
     throw new ApiError(401, "Invalid password");
   }
+
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
@@ -106,7 +110,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax'
   };
 
   return res
@@ -121,6 +126,7 @@ const loginUser = asyncHandler(async (req, res) => {
       )
     );
 });
+
 
 const logoutUser = asyncHandler(async(req, res) =>{
   await User.findByIdAndUpdate(
