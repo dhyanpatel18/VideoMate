@@ -10,6 +10,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     if (!isValidObjectId(videoId)) {
         throw new ApiError(400, 'Invalid video id');
     }
+    
     const existing = await Like.findOne({ video: videoId, likedBy });
     if (existing) {
         await existing.deleteOne();

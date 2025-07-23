@@ -47,6 +47,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
     if (!isValidObjectId(tweetId)) {
         throw new ApiError(400, 'Invalid tweet id');
     }
+    
     const tweet = await Tweet.findById(tweetId);
     if (!tweet) {
         throw new ApiError(404, 'Tweet not found');
