@@ -15,10 +15,13 @@ const getChannelStats = asyncHandler(async (req, res) => {
     const videos = await Video.find({ owner: channelId }, 'views');
     const totalViews = videos.reduce((sum, v) => sum + (v.views || 0), 0);
     const totalSubscribers = await Subscription.countDocuments({ channel: channelId });
+    const videoIds = videos.map(v => v._id);
+    const totalLikes = await Like.countDocuments({ video: { $in: videoIds } });
     return res.status(200).json(new ApiResponse(200, {
         totalVideos,
         totalViews,
-        totalSubscribers
+        totalSubscribers,
+        totalLikes
     }, 'Channel stats fetched successfully'));
 });
 
