@@ -161,7 +161,9 @@ const HomePage = () => {
               <Avatar radius="xl" src={user.avatar} style={{ cursor: 'pointer' }} onClick={() => navigate('/profile')} />
             </>
           ) : (
-            <Button color="red" radius="xl" size="lg" onClick={() => navigate('/register')}>Login / Register</Button>
+            <Button leftIcon={<IconUser size={20} />} color="red" radius="xl" size="lg" style={{ fontWeight: 700, letterSpacing: 1, boxShadow: theme.shadows.sm, padding: '0 1.5rem' }} onClick={() => navigate('/register')}>
+              Login / Register
+            </Button>
           )}
         </Group>
       </Paper>

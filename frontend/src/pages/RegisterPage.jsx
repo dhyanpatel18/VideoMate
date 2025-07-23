@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Paper, TextInput, PasswordInput, Button, Title, Text, Group, Avatar, useMantineTheme, Box } from '@mantine/core';
+import { Paper, TextInput, PasswordInput, Button, Title, Text, Group, Avatar, useMantineTheme, Box, Divider } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { IconUser } from '@tabler/icons-react';
 
 const API_BASE = 'http://localhost:3000/api/v1';
 
@@ -30,14 +31,14 @@ const RegisterPage = ({ setUser }) => {
   };
 
   return (
-    <Box style={{ minHeight: '100vh', background: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.colors.gray[0], display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Paper radius="md" p="xl" withBorder shadow="xl" style={{ minWidth: 350, background: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white }}>
+    <Box style={{ minHeight: '100vh', background: `linear-gradient(120deg, ${theme.colors.dark[7]} 60%, ${theme.colors.red[8]} 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Paper radius={24} p={36} withBorder shadow="2xl" style={{ minWidth: 400, maxWidth: 420, background: theme.colors.dark[6], border: `1.5px solid ${theme.colors.dark[4]}` }}>
         <Group position="center" mb="md">
-          <Avatar size={48} radius="xl" color="red">V</Avatar>
-          <Title order={2} color="red">VideoMate</Title>
+          <Avatar size={56} radius="xl" color="red"><IconUser size={32} /></Avatar>
+          <Title order={1} color="red" style={{ fontWeight: 900, letterSpacing: 2 }}>VideoMate</Title>
         </Group>
-        <Title order={3} align="center" mb="lg">Create your VideoMate account</Title>
-        <form onSubmit={handleSubmit}>
+        <Title order={3} align="center" mb={24} style={{ fontWeight: 700, fontSize: 28 }}>Create your VideoMate account</Title>
+        <form onSubmit={handleSubmit} style={{ marginBottom: 18 }}>
           <TextInput
             label="Full Name"
             name="fullname"
@@ -46,6 +47,8 @@ const RegisterPage = ({ setUser }) => {
             required
             mb="md"
             size="md"
+            radius="md"
+            autoFocus
           />
           <TextInput
             label="Username"
@@ -55,6 +58,7 @@ const RegisterPage = ({ setUser }) => {
             required
             mb="md"
             size="md"
+            radius="md"
           />
           <TextInput
             label="Email"
@@ -64,6 +68,7 @@ const RegisterPage = ({ setUser }) => {
             required
             mb="md"
             size="md"
+            radius="md"
           />
           <PasswordInput
             label="Password"
@@ -73,11 +78,13 @@ const RegisterPage = ({ setUser }) => {
             required
             mb="md"
             size="md"
+            radius="md"
           />
-          {error && <Text color="red" mb="md">{error}</Text>}
-          <Button type="submit" color="red" fullWidth size="md" loading={loading} mb="md">Register</Button>
+          {error && <Text color="red" mb="md" align="center" style={{ fontWeight: 600 }}>{error}</Text>}
+          <Button type="submit" color="red" fullWidth size="lg" radius="xl" loading={loading} style={{ fontWeight: 700, marginTop: 8, marginBottom: 8 }}>Register</Button>
         </form>
-        <Text align="center" mt="md">Already have an account? <Button variant="subtle" color="red" onClick={() => navigate('/login')}>Login</Button></Text>
+        <Divider my={18} label="or" labelPosition="center" color={theme.colors.dark[3]} />
+        <Text align="center" mt="md" style={{ fontWeight: 500, fontSize: 16 }}>Already have an account? <Button variant="subtle" color="red" size="md" style={{ fontWeight: 700 }} onClick={() => navigate('/login')}>Login</Button></Text>
       </Paper>
     </Box>
   );

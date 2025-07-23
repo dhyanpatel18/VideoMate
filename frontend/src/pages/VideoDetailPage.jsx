@@ -14,6 +14,7 @@ const VideoDetailPage = () => {
   const [error, setError] = useState('');
   const theme = useMantineTheme();
   const navigate = useNavigate();
+  const [user] = useState(null); // TEMP: replace with context later
 
   useEffect(() => {
     setLoading(true);
@@ -55,8 +56,14 @@ const VideoDetailPage = () => {
           style={{ width: 350 }}
         />
         <Group>
-          <Button leftIcon={<IconPlus size={18} />} color="red" onClick={() => navigate('/videos/upload')}>Upload</Button>
-          <Avatar radius="xl" />
+          {user ? (
+            <>
+              <Button leftIcon={<IconPlus size={18} />} color="red" onClick={() => navigate('/videos/upload')}>Upload</Button>
+              <Avatar radius="xl" style={{ cursor: 'pointer' }} onClick={() => navigate('/profile')} />
+            </>
+          ) : (
+            <Button color="red" radius="xl" size="md" onClick={() => navigate('/register')}>Login / Register</Button>
+          )}
         </Group>
       </Box>
       <Flex flex={1}>
