@@ -273,7 +273,7 @@ const HomePage = () => {
                   background: theme.colors.dark[6],
                   border: 'none',
                   minHeight: 220,
-                  // Remove maxWidth and margin from Card
+
                 }}
                 onClick={() => video._id.startsWith('dummy') ? null : navigate(`/videos/${video._id}`)}
               >
