@@ -26,8 +26,20 @@ const HomePage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const theme = useMantineTheme();
   const navigate = useNavigate();
-  // TEMP: Simulate user state (replace with context later)
-  const [user] = useState(null);
+  // Read user from localStorage
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem('videomate_user');
+    return stored ? JSON.parse(stored) : null;
+  });
+  // Sync user state if localStorage changes (optional, for multi-tab)
+  useEffect(() => {
+    const onStorage = () => {
+      const stored = localStorage.getItem('videomate_user');
+      setUser(stored ? JSON.parse(stored) : null);
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   useEffect(() => {
     axios.get(`${API_BASE}/videos`)
@@ -154,11 +166,43 @@ const HomePage = () => {
           style={{ width: 520, background: theme.colors.dark[6], color: theme.white }}
           styles={{ input: { background: theme.colors.dark[6], color: theme.white, fontSize: 18, padding: '1.1rem 1.2rem' } }}
         />
-        <Group spacing={8}>
+        <Group spacing={24} align="center">
           {user ? (
             <>
-              <Button leftIcon={<IconPlus size={20} />} color="red" radius="xl" size="lg" onClick={() => navigate('/videos/upload')}>Upload</Button>
-              <Avatar radius="xl" src={user.avatar} style={{ cursor: 'pointer' }} onClick={() => navigate('/profile')} />
+              <Button leftSection={<IconPlus size={20} />} color="red" radius="xl" size="lg" onClick={() => navigate('/videos/upload')}>Upload</Button>
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt="Avatar"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    cursor: 'pointer',
+                    border: '2px solid #999',
+                    background: theme.colors.dark[5],
+                    marginLeft: 18,
+                  }}
+                  onClick={() => navigate('/profile')}
+                />
+              ) : (
+                <Avatar
+                  size="md"
+                  radius="xl"
+                  style={{
+                    cursor: 'pointer',
+                    border: '2px solid #999',
+                    backgroundColor: theme.colors.dark[5],
+                    marginLeft: 18,
+                  }}
+                  onClick={() => navigate('/profile')}
+                >
+                  <IconUser size={18} />
+                </Avatar>
+              )}
+
+
             </>
           ) : (
             <Button leftIcon={<IconUser size={20} />} color="red" radius="xl" size="lg" style={{ fontWeight: 700, letterSpacing: 1, boxShadow: theme.shadows.sm, padding: '0 1.5rem' }} onClick={() => navigate('/register')}>
@@ -177,26 +221,67 @@ const HomePage = () => {
         }}
       >
         {/* Video Grid */}
-        <Box px={0} py={12} style={{ maxWidth: 1700, margin: '0 auto', width: '100%' }}>
+        <Box px={0} py={12} style={{ maxWidth: 1200, margin: '0 auto', width: '100%' }}>
           {loading && <Group position="center" mt="xl"><Loader color="red" /></Group>}
           {error && <Text color="red" align="center" mt="md">{error}</Text>}
           <SimpleGrid
-            cols={4}
-            spacing="2.5rem"
+            cols={3}
+            spacing="2.2rem"
             breakpoints={[
-              { maxWidth: 1600, cols: 3 },
               { maxWidth: 1200, cols: 2 },
               { maxWidth: 800, cols: 1 },
             ]}
             style={{ width: '100%' }}
           >
-            {videos.map(video => (
-              <Card key={video._id} shadow="lg" p="0" radius="lg" style={{ cursor: 'pointer', background: theme.colors.dark[6], border: 'none', minHeight: 320 }} onClick={() => navigate(`/videos/${video._id}`)}>
+            {(videos.length > 0 ? videos : [
+              {
+                _id: 'dummy1',
+                thumbnail: 'https://placehold.co/400x225/222/fff?text=Video+1',
+                title: 'How to Build a Modern UI in React',
+                owner: { username: 'JaneDoe', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
+                views: 1234
+              },
+              {
+                _id: 'dummy2',
+                thumbnail: 'https://placehold.co/400x225/333/fff?text=Video+2',
+                title: 'Understanding JavaScript Closures',
+                owner: { username: 'JohnSmith', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
+                views: 5678
+              },
+              {
+                _id: 'dummy3',
+                thumbnail: 'https://placehold.co/400x225/444/fff?text=Video+3',
+                title: 'CSS Grid vs Flexbox: Which Should You Use?',
+                owner: { username: 'CodeMaster', avatar: 'https://randomuser.me/api/portraits/men/85.jpg' },
+                views: 91011
+              },
+              {
+                _id: 'dummy4',
+                thumbnail: 'https://placehold.co/400x225/555/fff?text=Video+4',
+                title: 'Deploying Fullstack Apps with Vercel',
+                owner: { username: 'DeployGuru', avatar: 'https://randomuser.me/api/portraits/women/65.jpg' },
+                views: 1213
+              }
+            ]).map(video => (
+              <Card
+                key={video._id}
+                shadow="lg"
+                p="0"
+                radius="lg"
+                style={{
+                  cursor: 'pointer',
+                  background: theme.colors.dark[6],
+                  border: 'none',
+                  minHeight: 220,
+                  // Remove maxWidth and margin from Card
+                }}
+                onClick={() => video._id.startsWith('dummy') ? null : navigate(`/videos/${video._id}`)}
+              >
                 <Card.Section>
                   <img src={video.thumbnail} alt={video.title} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />
                 </Card.Section>
                 <Group noWrap p="md" spacing={16}>
-                  <Avatar radius="xl" size="md" />
+                  <Avatar radius="xl" size="md" src={video.owner?.avatar} />
                   <div style={{ flex: 1 }}>
                     <Text weight={600} size="lg" lineClamp={2} color={theme.white} mb={4}>{video.title}</Text>
                     <Text size="sm" color="gray.4">{video.owner?.username || 'Unknown'} • {video.views} views</Text>
