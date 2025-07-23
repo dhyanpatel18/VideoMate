@@ -1,39 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import axios from 'axios'
-import { useEffect } from 'react'
-
-
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import './App.css';
+import AuthProvider from './context/AuthContext';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import VideoListPage from './pages/VideoListPage';
+import VideoDetailPage from './pages/VideoDetailPage';
+import VideoUploadPage from './pages/VideoUploadPage';
+import PlaylistListPage from './pages/PlaylistListPage';
+import PlaylistDetailPage from './pages/PlaylistDetailPage';
+import DashboardPage from './pages/DashboardPage';
+import HealthcheckPage from './pages/HealthcheckPage';
+import TweetListPage from './pages/TweetListPage';
+import LikeListPage from './pages/LikeListPage';
+import CommentListPage from './pages/CommentListPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import Layout from './components/Layout';
 
 function App() {
-  const [jokes, setJokes] = useState([])
-
-  useEffect(()=>{
-    axios.get('/api/jokes')
-    .then((response)=>{
-      setJokes(response.data)
-      })
-    .catch((error) => {
-      console.log(error)
-    })
-  })
-
   return (
-    <>
-    <h1>Frontend</h1>
-    <p>JOKES:{jokes.length}</p>
-    {
-      jokes.map((joke, index)=>(
-        <div key = {joke.id}>
-          <h3>{joke.title}</h3>
-          <p>{joke.content}</p>
-        </div>
-      ))
-    }
-     </>
-  )
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Auth (no layout) */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+
+          {/* All other pages use the VideoMate layout */}
+          <Route
+            path="*"
+            element={
+              <Layout>
+                <Routes>
+                  <Route path="/videos" element={<VideoListPage />} />
+                  <Route path="/videos/upload" element={<ProtectedRoute><VideoUploadPage /></ProtectedRoute>} />
+                  <Route path="/videos/:videoId" element={<VideoDetailPage />} />
+                  <Route path="/playlists" element={<ProtectedRoute><PlaylistListPage /></ProtectedRoute>} />
+                  <Route path="/playlists/:playlistId" element={<ProtectedRoute><PlaylistDetailPage /></ProtectedRoute>} />
+                  <Route path="/dashboard/:channelId" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+                  <Route path="/tweets" element={<ProtectedRoute><TweetListPage /></ProtectedRoute>} />
+                  <Route path="/likes" element={<ProtectedRoute><LikeListPage /></ProtectedRoute>} />
+                  <Route path="/videos/:videoId/comments" element={<ProtectedRoute><CommentListPage /></ProtectedRoute>} />
+                  <Route path="/healthcheck" element={<HealthcheckPage />} />
+                  <Route path="*" element={<Navigate to="/videos" />} />
+                </Routes>
+              </Layout>
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

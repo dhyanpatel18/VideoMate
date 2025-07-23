@@ -1,0 +1,104 @@
+.videomate-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f9f9f9;
+}
+.vm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 0.5rem 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.vm-logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #e53935;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+.vm-search {
+  flex: 1;
+  display: flex;
+  max-width: 400px;
+  margin: 0 2rem;
+}
+.vm-search input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 2px 0 0 2px;
+  outline: none;
+}
+.vm-search button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #e53935;
+  color: #fff;
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+}
+.vm-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.vm-user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.vm-body {
+  display: flex;
+  flex: 1;
+}
+.vm-sidebar {
+  width: 200px;
+  background: #fff;
+  border-right: 1px solid #eee;
+  padding: 2rem 1rem;
+  min-height: 80vh;
+}
+.vm-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.vm-sidebar a {
+  color: #222;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+}
+.vm-sidebar a:hover {
+  color: #e53935;
+}
+.vm-main-content {
+  flex: 1;
+  padding: 2rem;
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .vm-sidebar {
+    display: none;
+  }
+  .vm-main-content {
+    padding: 1rem;
+  }
+}
+@media (max-width: 600px) {
+  .vm-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+  .vm-search {
+    margin: 0;
+    max-width: 100%;
+  }
+} 
