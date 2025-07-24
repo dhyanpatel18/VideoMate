@@ -1,0 +1,188 @@
+/* Sidebar Container - Increased width and better positioning */
+.sidebar {
+    position: fixed;
+    top: 88px;
+    left: 0;
+    height: calc(100vh - 88px);
+    width: 320px; /* Increased from 280px */
+    background-color: #ffffff;
+    border-right: 1px solid #e5e5e5;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    z-index: 998;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar States - Complete show/hide */
+.sidebar-open {
+    transform: translateX(0);
+}
+
+.sidebar-closed {
+    transform: translateX(-100%); /* Completely hidden */
+}
+
+/* Overlay for mobile */
+.sidebar-overlay {
+    position: fixed;
+    top: 88px;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 88px);
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 997;
+    display: none;
+}
+
+/* Shortcut Links Section - Fixed positioning */
+.shortcut-links {
+    padding: 16px 0; /* Increased padding */
+    margin-top: 0; /* Ensure no top margin pushing content up */
+}
+
+.side-link {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px; /* Increased padding */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0 12px 4px 12px; /* Added bottom margin for spacing */
+    border-radius: 12px;
+}
+
+.side-link:hover {
+    background-color: #f0f0f0;
+    transform: translateX(2px);
+}
+
+.side-link.active {
+    background-color: #f0f0f0;
+    font-weight: 500;
+}
+
+.side-icon {
+    width: 28px; /* Increased from 24px */
+    height: 28px; /* Increased from 24px */
+    margin-right: 20px;
+    object-fit: contain;
+    transition: filter 0.2s ease;
+    background-color: #f0f0f0;
+    flex-shrink: 0;
+}
+
+.side-link p {
+    font-size: 16px; /* Increased from 14px */
+    font-weight: 400;
+    color: #333;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3; /* Better line spacing */
+}
+
+/* Sidebar Divider */
+.sidebar-divider {
+    border: none;
+    height: 1px;
+    background-color: #e5e5e5;
+    margin: 16px 24px; /* Increased margins */
+}
+
+/* Subscribed List Section */
+.subscribed_list {
+    padding: 0 0 16px 0; /* Increased bottom padding */
+}
+
+.subscribed_list h3 {
+    font-size: 15px; /* Increased from 14px */
+    font-weight: 600; /* Made bolder */
+    color: #606060;
+    margin: 0 0 16px 24px; /* Increased bottom margin */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.subscribed_list .side-icon {
+    width: 32px; /* Increased from 28px */
+    height: 32px; /* Increased from 28px */
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease;
+    margin-right: 16px;
+}
+
+.subscribed_list .side-link:hover .side-icon {
+    border-color: #1976d2;
+}
+
+.subscribed_list .side-link:hover {
+    background-color: #f8f9fa;
+    transform: translateX(2px);
+}
+
+.subscribed_list .side-link p {
+    font-size: 16px; /* Consistent with other links */
+}
+
+/* Custom Scrollbar */
+.sidebar::-webkit-scrollbar {
+    width: 10px; /* Slightly wider */
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 320px; /* Keep same width on tablet */
+    }
+    
+    .sidebar-overlay {
+        display: block;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 300px; /* Slightly smaller on mobile */
+        top: 60px;
+        height: calc(100vh - 60px);
+    }
+    
+    .sidebar-overlay {
+        top: 60px;
+        height: calc(100vh - 60px);
+    }
+    
+    .side-link {
+        padding: 12px 20px;
+    }
+    
+    .side-link p {
+        font-size: 15px;
+    }
+}
+
+/* Fix for any potential top spacing issues */
+.sidebar * {
+    box-sizing: border-box;
+}
+
+/* Ensure proper spacing and no overflow issues */
+.sidebar {
+    overflow-x: hidden;
+}
