@@ -8,6 +8,7 @@ import {
     HiDotsVertical, 
     HiUser
 } from 'react-icons/hi';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ toggleSidebar }) => {
     return (
@@ -15,7 +16,7 @@ const Navbar = ({ toggleSidebar }) => {
             <div className="nav-left flex-div">
                 <HiMenu className="menu-icon" onClick={toggleSidebar} />
                 <div className="logo">
-                    <span className="logo-text">VideoMate</span>
+                <Link to='/'  > <span className="logo-text">VideoMate</span></Link>
                 </div>
             </div>
             <div className="nav-middle flex-div">

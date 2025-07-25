@@ -1,10 +1,11 @@
 import React from "react";
 import './Home.css'
 import Feed from "../../Components/Feed/Feed.jsx";
-const Home = () =>{
+
+const Home = ({ category, setCategory }) => {
   return(
     <div className="container">
-     <Feed />
+      <Feed category={category} setCategory={setCategory} />
     </div>
   )
 }

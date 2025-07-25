@@ -8,6 +8,7 @@ import './App.css';
 
 const App = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [category, setCategory] = useState(0); // Add category state here
 
     const toggleSidebar = () => {
         setSidebarOpen(!sidebarOpen);
@@ -16,11 +17,16 @@ const App = () => {
     return (
         <div className="app">
             <Navbar toggleSidebar={toggleSidebar} />
-            <Sidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+            <Sidebar 
+                isOpen={sidebarOpen} 
+                toggleSidebar={toggleSidebar}
+                category={category}
+                setCategory={setCategory}
+            />
             
             <div className={`main-content ${sidebarOpen ? 'with-sidebar' : 'without-sidebar'}`}>
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Home category={category} setCategory={setCategory} />} />
                     <Route path="/video/:categoryId/:videoId" element={<Video />} />
                 </Routes>
             </div>

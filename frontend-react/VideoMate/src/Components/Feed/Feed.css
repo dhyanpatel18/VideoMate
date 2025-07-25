@@ -1,35 +1,43 @@
 .feed {
     background-color: var(--bg-primary);
     display: grid;
-    gap: 24px;
-    padding: 24px;
+    gap: 16px; /* Reduced from 24px */
+    padding: 20px; /* Reduced from 24px */
     margin-top: 16px;
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    overflow-x:calc(100vw - 48px); /* Adjust for padding */
-
-    grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
+    overflow-x: hidden;
+    
+    /* Smaller minimum card size to fit more cards */
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, calc(100% - 32px)), 1fr));
 }
 
 .card {
     background: var(--bg-secondary);
-    border-radius: 16px;
+    border-radius: 12px; /* Reduced from 16px */
     overflow: hidden;
-    box-shadow: 0 4px 20px var(--shadow-light);
+    box-shadow: 0 2px 12px var(--shadow-light); /* Reduced shadow */
     transition: all 0.3s ease;
     cursor: pointer;
     border: 1px solid var(--border-color);
     position: relative;
     width: 100%;
-    min-width: 0; /* Allow cards to shrink below their minimum content size */
+    min-width: 0;
     box-sizing: border-box;
+    text-decoration: none;
+    color: inherit;
+}
+
+.card:visited {
+    color: inherit;
 }
 
 .card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px var(--shadow-dark);
+    transform: translateY(-4px); /* Reduced from -8px */
+    box-shadow: 0 8px 24px var(--shadow-dark); /* Reduced shadow */
     border-color: var(--border-hover);
+    text-decoration: none;
 }
 
 .card:hover::before {
@@ -41,37 +49,45 @@
     bottom: 0;
     background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, transparent 50%);
     pointer-events: none;
-    border-radius: 16px;
+    border-radius: 12px;
 }
 
 .card img {
     width: 100%;
-    height: 200px;
+    height: 160px; /* Reduced from 200px */
     object-fit: cover;
     display: block;
     background: linear-gradient(45deg, var(--bg-secondary), var(--bg-tertiary));
     transition: all 0.3s ease;
     max-width: 100%;
+    /* Loading animation */
+    background: linear-gradient(
+        90deg, 
+        var(--bg-secondary) 25%, 
+        var(--bg-tertiary) 50%, 
+        var(--bg-secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: darkLoading 2s infinite;
 }
 
 .card:hover img {
-    transform: scale(1.05);
+    transform: scale(1.03); /* Reduced from 1.05 */
     filter: brightness(1.1) saturate(1.1);
 }
 
 .card h2 {
-    font-size: 16px;
+    font-size: 14px; /* Reduced from 16px */
     font-weight: 600;
-    line-height: 1.4;
+    line-height: 1.3; /* Reduced from 1.4 */
     color: var(--text-primary);
-    margin: 14px 16px 10px 16px;
+    margin: 10px 12px 6px 12px; /* Reduced margins */
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 44px;
+    min-height: 36px; /* Reduced from 44px */
     transition: color 0.2s ease;
     word-wrap: break-word;
     hyphens: auto;
@@ -82,13 +98,12 @@
 }
 
 .card h3 {
-    font-size: 14px;
+    font-size: 12px; /* Reduced from 14px */
     font-weight: 500;
     color: var(--text-secondary);
-    margin: 0 16px 8px 16px;
+    margin: 0 12px 4px 12px; /* Reduced margins */
     display: -webkit-box;
     -webkit-line-clamp: 1;
-    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -101,37 +116,21 @@
 }
 
 .card p {
-    font-size: 13px;
+    font-size: 11px; /* Reduced from 13px */
     color: var(--text-muted);
-    margin: 0 16px 16px 16px;
+    margin: 0 12px 12px 12px; /* Reduced margins */
     font-weight: 400;
-    display: flex;
-    align-items: center;
-    gap: 6px;
     word-wrap: break-word;
-    flex-wrap: wrap;
 }
 
 .card p::after {
     content: '•';
     color: var(--accent-color);
     font-weight: bold;
-    margin: 0 4px;
-    flex-shrink: 0;
+    margin: 0 3px; /* Reduced from 4px */
 }
 
-/* Enhanced loading state */
-.card img {
-    background: linear-gradient(
-        90deg, 
-        var(--bg-secondary) 25%, 
-        var(--bg-tertiary) 50%, 
-        var(--bg-secondary) 75%
-    );
-    background-size: 200% 100%;
-    animation: darkLoading 2s infinite;
-}
-
+/* Loading animation */
 @keyframes darkLoading {
     0% {
         background-position: 200% 0;
@@ -141,103 +140,162 @@
     }
 }
 
-/* Focus states */
+/* Focus states for accessibility */
 .card:focus {
     outline: 2px solid var(--accent-color);
     outline-offset: 2px;
 }
 
-/* Responsive Design - Proper scaling */
+.card:active {
+    transform: translateY(-2px);
+}
+
+/* Loading skeleton states */
+.card.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.card.loading img {
+    background: linear-gradient(
+        90deg, 
+        var(--bg-secondary) 25%, 
+        var(--bg-tertiary) 50%, 
+        var(--bg-secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: darkLoading 1.5s infinite;
+}
+
+/* Responsive Design - More cards per row */
+@media (min-width: 1600px) {
+    .feed {
+        grid-template-columns: repeat(auto-fit, minmax(min(250px, calc(100% - 32px)), 1fr));
+        gap: 14px;
+    }
+}
+
 @media (max-width: 1400px) {
     .feed {
-        grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-        gap: 20px;
-        padding: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(min(260px, calc(100% - 32px)), 1fr));
+        gap: 14px;
+        padding: 18px;
     }
 }
 
 @media (max-width: 1200px) {
     .feed {
-        grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-        gap: 18px;
-        padding: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(min(240px, calc(100% - 30px)), 1fr));
+        gap: 12px;
+        padding: 16px;
     }
 }
 
 @media (max-width: 900px) {
     .feed {
-        grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(min(220px, calc(100% - 28px)), 1fr));
+        gap: 12px;
         padding: 16px;
     }
     
     .card img {
-        height: 180px;
+        height: 140px; /* Further reduced for smaller screens */
     }
 }
 
 @media (max-width: 700px) {
     .feed {
-        grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
-        gap: 16px;
-        padding: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(min(200px, calc(100% - 24px)), 1fr));
+        gap: 10px;
+        padding: 14px;
+    }
+    
+    .card img {
+        height: 120px;
     }
 }
 
 @media (max-width: 600px) {
     .feed {
-        grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
-        gap: 14px;
-        padding: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(min(180px, calc(100% - 20px)), 1fr));
+        gap: 10px;
+        padding: 12px;
     }
     
     .card h2 {
-        font-size: 15px;
-        margin: 12px 14px 8px 14px;
+        font-size: 13px;
+        margin: 8px 10px 4px 10px;
+        min-height: 32px;
     }
     
     .card h3 {
-        font-size: 13px;
-        margin: 0 14px 6px 14px;
+        font-size: 11px;
+        margin: 0 10px 3px 10px;
     }
     
     .card p {
-        font-size: 12px;
-        margin: 0 14px 14px 14px;
+        font-size: 10px;
+        margin: 0 10px 8px 10px;
     }
 }
 
 @media (max-width: 480px) {
     .feed {
-        grid-template-columns: 1fr;
-        gap: 14px;
-        padding: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(min(160px, calc(100% - 16px)), 1fr));
+        gap: 8px;
+        padding: 10px;
     }
     
     .card img {
-        height: 200px;
-    }
-}
-
-/* Very small screens */
-@media (max-width: 320px) {
-    .feed {
-        padding: 12px;
-        gap: 12px;
+        height: 100px;
     }
     
     .card h2 {
-        font-size: 14px;
-        margin: 10px 12px 6px 12px;
+        font-size: 12px;
+        min-height: 30px;
+    }
+}
+
+@media (max-width: 320px) {
+    .feed {
+        grid-template-columns: 1fr 1fr; /* Force 2 columns on very small screens */
+        gap: 6px;
+        padding: 8px;
+    }
+    
+    .card h2 {
+        font-size: 11px;
+        margin: 6px 8px 3px 8px;
+        min-height: 28px;
     }
     
     .card h3 {
-        font-size: 12px;
-        margin: 0 12px 4px 12px;
+        font-size: 10px;
+        margin: 0 8px 2px 8px;
     }
     
     .card p {
-        font-size: 11px;
-        margin: 0 12px 12px 12px;
+        font-size: 9px;
+        margin: 0 8px 6px 8px;
+    }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+    .card {
+        transition: none;
+    }
+    
+    .card img {
+        animation: none;
+        transition: none;
+    }
+    
+    .card:hover {
+        transform: none;
+    }
+    
+    .card:hover img {
+        transform: none;
     }
 }

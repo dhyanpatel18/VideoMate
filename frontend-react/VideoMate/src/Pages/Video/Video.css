@@ -1,14 +1,16 @@
 
+
 .play-container {
     display: flex;
     gap: 24px;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 24px 24px 0 24px; /* Remove top padding to reduce gap */
     background: var(--bg-primary);
     min-height: calc(100vh - 88px);
     box-sizing: border-box;
+    align-items: flex-start; /* Ensure both sections start at same height */
 }
 
 /* PlayVideo section (left side - 69%) */
@@ -16,55 +18,23 @@
     flex-basis: 69%;
     min-width: 0;
     background: var(--bg-primary);
+    padding-top: 0; /* Remove any top padding */
+    margin-top: 0; /* Remove any top margin */
 }
 
 /* Recommended section (right side - 30%) */
 .recommended {
     flex-basis: 30%;
-    background: var(--bg-secondary);
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid var(--border-color);
-    height: fit-content;
-    max-height: calc(100vh - 140px);
-    overflow-y: auto;
-    position: sticky;
-    top: 110px;
+    margin-top: 0; /* Ensure it aligns with PlayVideo */
+    padding-top: 0; /* Remove any top padding that might cause misalignment */
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
-    .play-container {
-        padding: 20px;
-        gap: 20px;
-    }
-    
-    .recommended {
-        padding: 20px;
-    }
-}
-
-@media (max-width: 1024px) {
-    .play-container {
-        padding: 16px;
-        gap: 16px;
-    }
-    
-    .play-video {
-        flex-basis: 65%;
-    }
-    
-    .recommended {
-        flex-basis: 33%;
-        padding: 18px;
-    }
-}
-
 @media (max-width: 768px) {
     .play-container {
         flex-direction: column;
         gap: 16px;
-        padding: 16px;
+        padding: 16px 16px 0 16px;
     }
     
     .play-video {
@@ -73,19 +43,6 @@
     
     .recommended {
         flex-basis: auto;
-        position: static;
-        max-height: none;
-        overflow-y: visible;
-    }
-}
-
-@media (max-width: 480px) {
-    .play-container {
-        padding: 12px;
-        gap: 12px;
-    }
-    
-    .recommended {
-        padding: 16px;
+        width: 100%;
     }
 }

@@ -361,7 +361,10 @@ nav {
         font-size: 18px;
     }
 }
-
+Link{
+    text-decoration: none;
+    color: inherit; /* Inherit color from parent */
+}
 /* Focus states for accessibility */
 .menu-icon:focus,
 .nav-icon:focus,

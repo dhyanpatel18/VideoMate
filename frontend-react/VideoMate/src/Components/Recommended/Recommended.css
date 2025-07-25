@@ -1,15 +1,12 @@
-/* ========= RECOMMENDED SECTION ========= */
 .recommended {
-  top:auto;
     flex-basis: 30%;
     background: var(--bg-secondary);
     border-radius: 16px;
     padding: 24px;
     border: 1px solid var(--border-color);
-    /* Remove sticky positioning and max-height for page scrolling */
-    /* position: static; */
-    /* max-height: none; */
-    /* overflow-y: visible; */
+    /* Removed sticky positioning and max-height for natural page scrolling */
+    min-height: calc(100vh - 140px); /* Ensure it takes up good vertical space */
+    height: auto; /* Allow natural height expansion */
 }
 
 .recommended h2 {
@@ -22,6 +19,10 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-secondary);
+    z-index: 10;
 }
 
 .recommended h2::before {
@@ -32,15 +33,14 @@
 .recommended-videos {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    cursor: pointer;
+    gap: 12px; /* Slightly reduced gap for more compact layout */
+    padding-bottom: 20px; /* Add bottom padding for better scroll end */
 }
 
-/* ========= VIDEO CARDS ========= */
 .video-card {
     display: flex;
     gap: 12px;
-    padding: 12px;
+    padding: 14px; /* Slightly increased padding for better appearance */
     background: var(--bg-tertiary);
     border-radius: 12px;
     border: 1px solid var(--border-color);
@@ -48,6 +48,14 @@
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    min-height: 80px; /* Ensure consistent card height */
+}
+
+.video-card:visited {
+    color: inherit;
+    text-decoration: none;
 }
 
 .video-card::before {
@@ -70,35 +78,17 @@
     border-color: var(--border-hover);
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
 }
 
-/* ========= THUMBNAIL ========= */
 .video-card img {
-    width: 120px;
-    height: 68px;
+    width: 130px; /* Slightly increased thumbnail size */
+    height: 73px;
     object-fit: cover;
     border-radius: 8px;
     background: var(--bg-secondary);
     flex-shrink: 0;
     transition: all 0.2s ease;
-    /* Loading shimmer effect */
-    background: linear-gradient(
-        90deg,
-        var(--bg-secondary) 25%,
-        var(--bg-tertiary) 50%,
-        var(--bg-secondary) 75%
-    );
-    background-size: 200% 100%;
-    animation: thumbnailShimmer 2s infinite;
-}
-
-@keyframes thumbnailShimmer {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
 }
 
 .video-card:hover img {
@@ -106,14 +96,13 @@
     filter: brightness(1.1);
 }
 
-/* ========= VIDEO INFO ========= */
 .video-card .video-info {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     min-width: 0;
-    gap: 4px;
+    gap: 5px; /* Slightly increased gap for better spacing */
 }
 
 .video-card h3 {
@@ -128,6 +117,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.2s ease;
+    max-height: 35px; /* Ensure consistent title height */
 }
 
 .video-card:hover h3 {
@@ -143,55 +133,111 @@
     line-height: 1.2;
 }
 
+.video-card p:first-of-type {
+    font-weight: 600; /* Channel name styling */
+    margin-bottom: 2px;
+}
+
 .video-card:hover p {
     color: var(--text-primary);
 }
 
-/* Channel name styling */
-.video-card p:first-of-type {
-    font-weight: 600;
-    margin-bottom: 2px;
+/* Loading States */
+.video-card.loading {
+    background: var(--bg-tertiary);
+    pointer-events: none;
+    cursor: default;
 }
 
-/* Views and time styling */
-.video-card p:last-of-type {
-    font-size: 11px;
-    color: var(--text-muted);
+.loading-thumbnail {
+    width: 130px;
+    height: 73px;
+    background: linear-gradient(
+        90deg,
+        var(--bg-secondary) 25%,
+        var(--border-color) 50%,
+        var(--bg-secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+    flex-shrink: 0;
 }
 
-/* ========= RESPONSIVE DESIGN ========= */
+.loading-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.loading-title {
+    height: 16px;
+    background: linear-gradient(
+        90deg,
+        var(--bg-secondary) 25%,
+        var(--border-color) 50%,
+        var(--bg-secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 3px;
+    margin-bottom: 4px;
+}
+
+.loading-channel {
+    height: 12px;
+    width: 60%;
+    background: linear-gradient(
+        90deg,
+        var(--bg-secondary) 25%,
+        var(--border-color) 50%,
+        var(--bg-secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 3px;
+}
+
+.loading-meta {
+    height: 12px;
+    width: 40%;
+    background: linear-gradient(
+        90deg,
+        var(--bg-secondary) 25%,
+        var(--border-color) 50%,
+        var(--bg-secondary) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 3px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Responsive Design */
 @media (max-width: 1200px) {
     .recommended {
         padding: 20px;
+        min-height: calc(100vh - 120px);
     }
     
     .video-card {
-        padding: 10px;
+        padding: 12px;
         gap: 10px;
     }
     
-    .video-card img {
-        width: 110px;
-        height: 62px;
-    }
-    
-    .video-card h3 {
-        font-size: 13px;
-    }
-    
-    .video-card p {
-        font-size: 11px;
-    }
-}
-
-@media (max-width: 1024px) {
-    .recommended {
-        padding: 18px;
-    }
-    
-    .video-card img {
-        width: 100px;
-        height: 56px;
+    .video-card img,
+    .loading-thumbnail {
+        width: 120px;
+        height: 67px;
     }
     
     .video-card h3 {
@@ -207,15 +253,17 @@
     .recommended {
         padding: 16px;
         border-radius: 12px;
+        min-height: auto; /* Remove min-height on mobile */
     }
     
     .recommended h2 {
         font-size: 16px;
         margin-bottom: 16px;
+        position: static; /* Remove sticky on mobile */
     }
     
     .recommended-videos {
-        gap: 12px;
+        gap: 10px;
     }
     
     .video-card {
@@ -223,9 +271,10 @@
         gap: 10px;
     }
     
-    .video-card img {
-        width: 120px;
-        height: 68px;
+    .video-card img,
+    .loading-thumbnail {
+        width: 110px;
+        height: 62px;
     }
     
     .video-card h3 {
@@ -237,46 +286,7 @@
     }
 }
 
-@media (max-width: 480px) {
-    .recommended {
-        padding: 14px;
-    }
-    
-    /* Switch to horizontal scroll on very small screens */
-    .recommended-videos {
-        flex-direction: row;
-        overflow-x: auto;
-        gap: 12px;
-        padding-bottom: 8px;
-    }
-    
-    .video-card {
-        flex-direction: column;
-        min-width: 160px;
-        padding: 10px;
-    }
-    
-    .video-card img {
-        width: 100%;
-        height: 90px;
-    }
-    
-    /* Custom scrollbar for horizontal scroll */
-    .recommended-videos::-webkit-scrollbar {
-        height: 4px;
-    }
-    
-    .recommended-videos::-webkit-scrollbar-track {
-        background: var(--bg-secondary);
-    }
-    
-    .recommended-videos::-webkit-scrollbar-thumb {
-        background: var(--bg-tertiary);
-        border-radius: 2px;
-    }
-}
-
-/* ========= FOCUS STATES FOR ACCESSIBILITY ========= */
+/* Focus states for accessibility */
 .video-card:focus {
     outline: 2px solid var(--accent-color);
     outline-offset: 2px;
@@ -284,32 +294,4 @@
 
 .video-card:active {
     transform: translateY(0);
-}
-
-/* ========= LOADING STATES ========= */
-.video-card.loading {
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-.video-card.loading h3 {
-    background: linear-gradient(
-        90deg,
-        var(--bg-secondary) 25%,
-        var(--bg-tertiary) 50%,
-        var(--bg-secondary) 75%
-    );
-    background-size: 200% 100%;
-    animation: textShimmer 1.5s infinite;
-    color: transparent;
-    border-radius: 4px;
-}
-
-@keyframes textShimmer {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
 }

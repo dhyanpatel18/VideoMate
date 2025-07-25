@@ -6,11 +6,11 @@
     height: calc(100vh - 88px);
     width: 320px;
     background: var(--bg-secondary);
-    border-right: 1px solid var(--border);
+    border-right: 1px solid var(--border-color);
     overflow-y: auto;
     transition: transform 0.3s ease;
     z-index: 998;
-    box-shadow: 2px 0 12px var(--shadow-heavy);
+    box-shadow: 2px 0 12px var(--shadow-dark);
 }
 
 /* Sidebar States */
@@ -58,8 +58,9 @@
     transform: translateX(4px);
 }
 
+/* Active state with left border - THIS IS THE KEY STYLING */
 .side-link.active {
-    background: var(--accent);
+    background: linear-gradient(90deg, var(--accent-color), rgba(255, 107, 107, 0.8));
     color: #fff;
     font-weight: 600;
 }
@@ -67,12 +68,19 @@
 .side-link.active::before {
     content: '';
     position: absolute;
-    left: 0;
+    left: -14px; /* Extend beyond the margin */
     top: 0;
     bottom: 0;
     width: 4px;
     background: #fff;
     border-radius: 0 4px 4px 0;
+}
+
+/* Alternative active state (red left border) */
+.side-link.active-alt {
+    background: var(--bg-tertiary);
+    border-left: 4px solid var(--accent-color);
+    padding-left: 20px; /* Adjust padding to compensate for border */
 }
 
 .side-icon {
@@ -116,7 +124,7 @@
 .sidebar-divider {
     border: none;
     height: 1px;
-    background: var(--border);
+    background: var(--border-color);
     margin: 18px 24px;
 }
 
@@ -145,8 +153,8 @@
 }
 
 .subscribed_list .side-link:hover .side-icon {
-    border-color: var(--accent);
-    box-shadow: 0 0 12px rgba(255, 98, 98, 0.3);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 12px rgba(255, 107, 107, 0.3);
 }
 
 .subscribed_list .side-link:hover {
@@ -176,17 +184,6 @@
     background: var(--border-hover);
 }
 
-/* Enhanced hover effects */
-.shortcut-links .side-link:hover {
-    background: var(--bg-tertiary);
-    transform: translateX(2px);
-}
-
-.subscribed_list .side-link:hover {
-    background: var(--bg-tertiary);
-    transform: translateX(2px);
-}
-
 /* Responsive Design */
 @media (max-width: 1024px) {
     .sidebar {
@@ -208,37 +205,5 @@
     .sidebar-overlay {
         top: 60px;
         height: calc(100vh - 60px);
-    }
-    
-    .side-link {
-        padding: 12px 20px;
-        margin: 0 12px 4px 12px;
-    }
-    
-    .side-icon {
-        width: 24px;
-        height: 24px;
-        margin-right: 18px;
-    }
-    
-    .subscribed_list .side-icon {
-        width: 28px;
-        height: 28px;
-        margin-right: 14px;
-    }
-}
-
-@media (max-width: 480px) {
-    .sidebar {
-        width: 280px;
-    }
-    
-    .side-link {
-        padding: 10px 16px;
-        margin: 0 10px 3px 10px;
-    }
-    
-    .side-link p {
-        font-size: 15px;
     }
 }

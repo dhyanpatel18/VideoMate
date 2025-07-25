@@ -1,48 +1,38 @@
 import React from "react";
 import './Sidebar.css';
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
+const Sidebar = ({ isOpen, toggleSidebar, category, setCategory }) => {
+    
+    const sidebarData = [
+        { id: 0, name: "Home", icon: "/assets/home.png", categoryId: 0 },
+        { id: 1, name: "Gaming", icon: "/assets/game_icon.png", categoryId: 20 },
+        { id: 2, name: "Automobiles", icon: "/assets/automobiles.png", categoryId: 2 },
+        { id: 3, name: "Entertainment", icon: "/assets/entertainment.png", categoryId: 24 },
+        { id: 4, name: "Music", icon: "/assets/music.png", categoryId: 10 },
+        { id: 6, name: "News", icon: "/assets/news.png", categoryId: 25 },
+        { id: 7, name: "Sports", icon: "/assets/sports.png", categoryId: 17 },
+    ];
+
     return (
         <>
-            {/* Overlay for mobile */}
             {isOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
             
-            {/* Sidebar - Completely hidden when closed */}
             <div className={`sidebar ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
                 <div className="shortcut-links">
-                    <br/><br/>
-                    <div className="side-link active">
-                        <img src="/assets/home.png" alt="Home" className="side-icon" />
-                        <p>Home</p>
-                    </div>
-                    <div className="side-link">
-                        <img src="/assets/game_icon.png" alt="Games" className="side-icon" />
-                        <p>Games</p>
-                    </div>
-                    <div className="side-link">
-                        <img src="/assets/automobiles.png" alt="Automobiles" className="side-icon" />
-                        <p>Automobiles</p>
-                    </div>
-                    <div className="side-link">
-                        <img src="/assets/entertainment.png" alt="Entertainment" className="side-icon" />
-                        <p>Entertainment</p>
-                    </div>
-                    <div className="side-link">
-                        <img src="/assets/music.png" alt="Music" className="side-icon" />
-                        <p>Music</p>
-                    </div>
-                    <div className="side-link">
-                        <img src="/assets/blogs.png" alt="Blogs" className="side-icon" />
-                        <p>Blogs</p>
-                    </div>
-                    <div className="side-link">
-                        <img src="/assets/news.png" alt="News" className="side-icon" />
-                        <p>News</p>
-                    </div>
+                    {sidebarData.map((item) => (
+                        <div 
+                            key={item.id}
+                            className={`side-link ${category === item.categoryId ? 'active' : ''}`}
+                            onClick={() => setCategory(item.categoryId)}
+                        >
+                            <img src={item.icon} alt={item.name} className="side-icon" />
+                            <p>{item.name}</p>
+                        </div>
+                    ))}
                 </div>
 
                 <hr className="sidebar-divider" />
-
+                
                 <div className="subscribed_list">
                     <h3>Subscribed</h3>
                     <div className="side-link">
