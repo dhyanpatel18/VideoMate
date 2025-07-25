@@ -1,11 +1,11 @@
 import React from "react";
 import './Home.css'
-import Navbar from "../../Components/Navbar/Navbar";
-import Sidebar from "../../Components/Sidebar/Sidebar";
+import Feed from "../../Components/Feed/Feed.jsx";
 const Home = () =>{
   return(
-    <Sidebar/>
-
+    <div className="container">
+     <Feed />
+    </div>
   )
 }
 

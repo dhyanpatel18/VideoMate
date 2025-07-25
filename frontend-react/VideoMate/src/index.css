@@ -1,0 +1,49 @@
+/* Global Dark Theme Variables */
+/* ---------------- GLOBAL DARK THEME ---------------- */
+:root {
+  --bg-primary:   #0f0f0f;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary:  #232323;
+  --text-primary: #ffffff;
+  --text-secondary:#b3b3b3;
+  --text-muted:   #8a8a8a;
+  --border:       #313131;
+  --border-hover: #4a4a4a;
+  --accent:       #ff6262;
+  --shadow-light: rgba(0,0,0,.35);
+  --shadow-heavy: rgba(0,0,0,.7);
+}
+
+body{
+  margin:0;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  font-family:Inter,Segoe UI,Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+/* Prevent horizontal scrolling globally */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.app {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+.main-content {
+    overflow-x: hidden;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ensure all containers respect viewport width */
+* {
+    box-sizing: border-box;
+}

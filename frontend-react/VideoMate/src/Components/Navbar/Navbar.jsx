@@ -15,7 +15,7 @@ const Navbar = ({ toggleSidebar }) => {
             <div className="nav-left flex-div">
                 <HiMenu className="menu-icon" onClick={toggleSidebar} />
                 <div className="logo">
-                    <img src="/assets/logo.png" alt="VideoMate Logo" className="logo-image" />
+                    <span className="logo-text">VideoMate</span>
                 </div>
             </div>
             <div className="nav-middle flex-div">
