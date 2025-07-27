@@ -116,6 +116,43 @@
   cursor: not-allowed;
 }
 
+/* File upload styles */
+.file-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.file-input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.file-input:focus {
+  outline: none;
+  border-color: #065fd4;
+  box-shadow: 0 0 0 2px rgba(6, 95, 212, 0.1);
+}
+
+.file-preview {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.preview-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #065fd4;
+}
+
 /* Responsive design */
 @media (max-width: 480px) {
   .auth-modal {

@@ -40,63 +40,65 @@ const Navbar = ({ toggleSidebar, onSearch }) => {
     };
 
     return (
-        <nav className="flex-div">
-            <div className="nav-left flex-div">
-                <HiMenu className="menu-icon" onClick={toggleSidebar} />
-                <div className="logo">
-                 <Link to='/'>  <span className="logo-text">VideoMate</span></Link>
+        <>
+            <nav className="flex-div">
+                <div className="nav-left flex-div">
+                    <HiMenu className="menu-icon" onClick={toggleSidebar} />
+                    <div className="logo">
+                     <Link to='/'>  <span className="logo-text">VideoMate</span></Link>
+                    </div>
                 </div>
-            </div>
-            <div className="nav-middle flex-div">
-                <form className="search-container" onSubmit={handleSearchSubmit}>
-                    <input 
-                        type="text" 
-                        placeholder="Search videos..." 
-                        className="search-bar"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                    />
-                    <button type="submit" className="search-icon-button">
-                        <HiSearch className="search-icon" />
-                    </button>
-                </form>
-            </div>
-            <div className="nav-right flex-div">
-                {isAuthenticated ? (
-                    <>
-                        <HiUpload className="nav-icon" title="Upload Video" />
-                        <HiBell className="nav-icon" title="Notifications" />
-                        <HiDotsVertical className="nav-icon" title="More" />
-                        <div className="user-profile">
-                            <img 
-                                src={user?.avatar || '/assets/user_profile.jpg'} 
-                                alt={user?.fullname || user?.username || 'User'} 
-                                className="profile-avatar"
-                            />
-                            <span className="username">{user?.username || user?.fullname}</span>
-                            <HiLogout className="nav-icon logout-icon" title="Logout" onClick={handleLogout} />
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <HiBell className="nav-icon" title="Notifications" />
-                        <HiDotsVertical className="nav-icon" title="More" />
-                        <button 
-                            className="login-button"
-                            onClick={() => setShowAuthModal(true)}
-                        >
-                            Sign In
+                <div className="nav-middle flex-div">
+                    <form className="search-container" onSubmit={handleSearchSubmit}>
+                        <input 
+                            type="text" 
+                            placeholder="Search videos..." 
+                            className="search-bar"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                        />
+                        <button type="submit" className="search-icon-button">
+                            <HiSearch className="search-icon" />
                         </button>
-                    </>
-                )}
-            </div>
-        </nav>
-        
-        <AuthModal 
-            isOpen={showAuthModal} 
-            onClose={() => setShowAuthModal(false)} 
-        />
+                    </form>
+                </div>
+                <div className="nav-right flex-div">
+                    {isAuthenticated ? (
+                        <>
+                            <HiUpload className="nav-icon" title="Upload Video" />
+                            <HiBell className="nav-icon" title="Notifications" />
+                            <HiDotsVertical className="nav-icon" title="More" />
+                            <div className="user-profile">
+                                <img 
+                                    src={user?.avatar || '/assets/user_profile.jpg'} 
+                                    alt={user?.fullname || user?.username || 'User'} 
+                                    className="profile-avatar"
+                                />
+                                <span className="username">{user?.username || user?.fullname}</span>
+                                <HiLogout className="nav-icon logout-icon" title="Logout" onClick={handleLogout} />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <HiBell className="nav-icon" title="Notifications" />
+                            <HiDotsVertical className="nav-icon" title="More" />
+                            <button 
+                                className="login-button"
+                                onClick={() => setShowAuthModal(true)}
+                            >
+                                Sign In
+                            </button>
+                        </>
+                    )}
+                </div>
+            </nav>
+            
+            <AuthModal 
+                isOpen={showAuthModal} 
+                onClose={() => setShowAuthModal(false)} 
+            />
+        </>
     );
 };
 

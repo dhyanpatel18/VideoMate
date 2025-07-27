@@ -11,6 +11,10 @@ const AuthModal = ({ isOpen, onClose }) => {
     password: '',
     confirmPassword: ''
   });
+  const [files, setFiles] = useState({
+    avatar: null,
+    coverImage: null
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -21,6 +25,16 @@ const AuthModal = ({ isOpen, onClose }) => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files: selectedFiles } = e.target;
+    if (selectedFiles && selectedFiles[0]) {
+      setFiles({
+        ...files,
+        [name]: selectedFiles[0]
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -38,12 +52,25 @@ const AuthModal = ({ isOpen, onClose }) => {
         if (formData.password !== formData.confirmPassword) {
           throw new Error('Passwords do not match');
         }
-        await register({
-          username: formData.username,
-          email: formData.email,
-          fullname: formData.fullname,
-          password: formData.password
-        });
+        
+        // Check if avatar is selected
+        if (!files.avatar) {
+          throw new Error('Avatar is required');
+        }
+        
+        // Create FormData for file upload
+        const formDataToSend = new FormData();
+        formDataToSend.append('username', formData.username);
+        formDataToSend.append('email', formData.email);
+        formDataToSend.append('fullname', formData.fullname);
+        formDataToSend.append('password', formData.password);
+        formDataToSend.append('avatar', files.avatar);
+        
+        if (files.coverImage) {
+          formDataToSend.append('coverImage', files.coverImage);
+        }
+        
+        await register(formDataToSend);
       }
       onClose();
       setFormData({
@@ -52,6 +79,10 @@ const AuthModal = ({ isOpen, onClose }) => {
         fullname: '',
         password: '',
         confirmPassword: ''
+      });
+      setFiles({
+        avatar: null,
+        coverImage: null
       });
     } catch (error) {
       setError(error.message);
@@ -103,6 +134,57 @@ const AuthModal = ({ isOpen, onClose }) => {
                 onChange={handleInputChange}
                 required
               />
+            </div>
+          )}
+
+          {!isLogin && (
+            <div className="form-group">
+              <label htmlFor="avatar" className="file-label">
+                Avatar (Required)
+              </label>
+              <input
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+                onChange={handleFileChange}
+                required={!isLogin}
+                className="file-input"
+              />
+              {files.avatar && (
+                <div className="file-preview">
+                  <img 
+                    src={URL.createObjectURL(files.avatar)} 
+                    alt="Avatar preview" 
+                    className="preview-image"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          {!isLogin && (
+            <div className="form-group">
+              <label htmlFor="coverImage" className="file-label">
+                Cover Image (Optional)
+              </label>
+              <input
+                type="file"
+                id="coverImage"
+                name="coverImage"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="file-input"
+              />
+              {files.coverImage && (
+                <div className="file-preview">
+                  <img 
+                    src={URL.createObjectURL(files.coverImage)} 
+                    alt="Cover image preview" 
+                    className="preview-image"
+                  />
+                </div>
+              )}
             </div>
           )}
 

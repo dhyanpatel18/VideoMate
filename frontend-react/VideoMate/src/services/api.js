@@ -103,10 +103,22 @@ class ApiService {
 
   // User APIs
   async register(userData) {
-    return this.request('/users/register', {
+    const token = this.getAuthToken();
+    const url = `${this.baseURL}/users/register`;
+    
+    const response = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify(userData),
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: userData, // userData is already FormData
     });
+
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'Registration failed');
+    }
+    return data;
   }
 
   async login(credentials) {
