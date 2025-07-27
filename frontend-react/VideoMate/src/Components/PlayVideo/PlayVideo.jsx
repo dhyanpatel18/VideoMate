@@ -9,6 +9,10 @@ import jack from '/assets/jack.png';
 import user_profile from '/assets/user_profile.jpg';
 import { useParams } from "react-router-dom";
 import apiService from "../../services/api";
+import { useAuth } from "../../contexts/AuthContext";
+import CommentSection from "../Comments/CommentSection.jsx";
+import ChannelInfo from "../Channel/ChannelInfo";
+import ErrorBoundary from "../ErrorBoundary/ErrorBoundary";
 
 const PlayVideo = () => {
   const { videoId } = useParams(); // Get videoId from URL
@@ -16,6 +20,9 @@ const PlayVideo = () => {
   const [channelData, setChannelData] = useState(null);
   const [commentData, setCommentData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const { user, isAuthenticated } = useAuth();
 
   // Helper function to format view count
   const formatViewCount = (viewCount) => {
@@ -57,35 +64,39 @@ const PlayVideo = () => {
   const fetchVideoData = async () => {
     try {
       const response = await apiService.getVideoById(videoId);
-      if (response.data) {
+      if (response && response.data) {
         setApiData(response.data);
         setChannelData(response.data.owner);
+        setLikeCount(response.data.likes || 0);
+      } else {
+        setApiData(null);
       }
     } catch (error) {
       console.error('Error fetching video data:', error);
+      setApiData(null);
     }
   };
 
-  // Fetch comments
-  const fetchCommentData = async () => {
+  // Handle video like
+  const handleVideoLike = async () => {
+    if (!isAuthenticated) {
+      alert('Please login to like videos');
+      return;
+    }
+
     try {
-      const response = await apiService.getVideoComments(videoId);
-      if (response.data) {
-        setCommentData(response.data);
-      }
+      await apiService.toggleVideoLike(videoId);
+      setIsLiked(!isLiked);
+      setLikeCount(prev => isLiked ? Math.max(0, prev - 1) : prev + 1);
     } catch (error) {
-      console.error('Error fetching comments:', error);
-      setCommentData([]); // Set empty array if comments fail to load
+      console.error('Error toggling like:', error);
     }
   };
 
   useEffect(() => {
     if (videoId) {
       setLoading(true);
-      Promise.all([
-        fetchVideoData(),
-        fetchCommentData()
-      ]).finally(() => {
+      fetchVideoData().finally(() => {
         setLoading(false);
       });
     }
@@ -135,9 +146,9 @@ const PlayVideo = () => {
               {formatViewCount(apiData.views)} views &bull; {formatPublishedDate(apiData.createdAt)}
             </p>
             <div className="like-dislike">
-             <span>
-               <img src={like} alt="like" className="like-icon" />
-               {apiData.likes ? formatViewCount(apiData.likes) : 'Like'}
+             <span onClick={handleVideoLike} className="like-button">
+               <img src={like} alt="like" className={`like-icon ${isLiked ? 'liked' : ''}`} />
+               {formatViewCount(likeCount)}
              </span>  
              <span><img src={dislike} alt="dislike" className="dislike-icon" />Dislike</span>
              <span><img src={share} alt="share" className="share-icon" />Share</span>
@@ -147,18 +158,11 @@ const PlayVideo = () => {
         
         <hr />
         
-        <div className="publisher">
-            <img 
-              src={channelData?.avatar || jack} 
-              alt={channelData?.fullname || channelData?.username || "Channel"} 
-              className="publisher-image" 
-            />
-            <div>
-                <p>{channelData?.fullname || channelData?.username || 'Unknown User'}</p>
-                <p>Channel</p>
-            </div>
-            <button className="subscribe-button">Subscribe</button>
-        </div>
+        {/* Channel Info Component */}
+        <ChannelInfo 
+          channelId={channelData?._id} 
+          channelData={channelData} 
+        />
         
         <div className="video-description">
             <p>{apiData.description || 'No description available'}</p>
@@ -166,33 +170,10 @@ const PlayVideo = () => {
         
         <hr />
         
-        <div className="comment-section">
-            <p>{commentData.length > 0 ? `${commentData.length} Comments` : 'Comments'}</p>
-            <div className="comment">
-                <img src={user_profile} alt="user" className="user-profile" />
-                <input type="text" placeholder="Add a public comment..." className="comment-input" />
-                <button className="comment-button">Post</button>
-            </div>
-            
-            {/* Dynamic comments */}
-            {commentData.map((comment, index) => (
-              <div key={index} className="comment-item">
-                  <img 
-                    src={comment.owner?.avatar || user_profile} 
-                    alt="user" 
-                    className="comment-user-profile" 
-                  />
-                  <div className="comment-content">
-                      <p className="comment-author">
-                        {comment.owner?.fullname || comment.owner?.username || 'Unknown User'}
-                      </p>
-                      <p className="comment-text">
-                        {comment.content}
-                      </p>
-                  </div>
-              </div>
-            ))}
-        </div>
+        {/* Comment Section Component */}
+        <ErrorBoundary>
+          <CommentSection videoId={videoId} />
+        </ErrorBoundary>
     </div>
   );
 }

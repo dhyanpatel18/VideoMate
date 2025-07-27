@@ -23,7 +23,11 @@ export const AuthProvider = ({ children }) => {
         const token = apiService.getAuthToken();
         if (token) {
           const response = await apiService.getCurrentUser();
-          setUser(response.data);
+          if (response && response.data) {
+            setUser(response.data);
+          } else {
+            apiService.removeAuthToken();
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -40,9 +44,13 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await apiService.login(credentials);
-      apiService.setAuthToken(response.data.accessToken);
-      setUser(response.data.user);
-      return response;
+      if (response && response.data) {
+        apiService.setAuthToken(response.data.accessToken);
+        setUser(response.data.user);
+        return response;
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error) {
       setError(error.message);
       throw error;
@@ -53,9 +61,13 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await apiService.register(userData);
-      apiService.setAuthToken(response.data.accessToken);
-      setUser(response.data.user);
-      return response;
+      if (response && response.data) {
+        apiService.setAuthToken(response.data.accessToken);
+        setUser(response.data.user);
+        return response;
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error) {
       setError(error.message);
       throw error;
@@ -77,8 +89,12 @@ export const AuthProvider = ({ children }) => {
     try {
       setError(null);
       const response = await apiService.updateUserProfile(userData);
-      setUser(response.data);
-      return response;
+      if (response && response.data) {
+        setUser(response.data);
+        return response;
+      } else {
+        throw new Error('Invalid response from server');
+      }
     } catch (error) {
       setError(error.message);
       throw error;

@@ -51,54 +51,79 @@ class ApiService {
 
   // Video APIs
   async getAllVideos(params = {}) {
-    const queryParams = new URLSearchParams(params).toString();
-    return this.request(`/videos?${queryParams}`);
+    try {
+      const queryParams = new URLSearchParams(params).toString();
+      return await this.request(`/videos?${queryParams}`);
+    } catch (error) {
+      console.error('Error getting all videos:', error);
+      return { data: { videos: [] } };
+    }
   }
 
   async getVideoById(videoId) {
-    return this.request(`/videos/${videoId}`);
+    try {
+      return await this.request(`/videos/${videoId}`);
+    } catch (error) {
+      console.error('Error getting video by ID:', error);
+      throw error;
+    }
   }
 
   async publishVideo(formData) {
-    const token = this.getAuthToken();
-    const url = `${this.baseURL}/videos`;
-    
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
+    try {
+      const token = this.getAuthToken();
+      const url = `${this.baseURL}/videos`;
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || 'Failed to publish video');
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to publish video');
+      }
+      return data;
+    } catch (error) {
+      console.error('Error publishing video:', error);
+      throw error;
     }
-    return data;
   }
 
   async updateVideo(videoId, formData) {
-    const token = this.getAuthToken();
-    const url = `${this.baseURL}/videos/${videoId}`;
-    
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
+    try {
+      const token = this.getAuthToken();
+      const url = `${this.baseURL}/videos/${videoId}`;
+      
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || 'Failed to update video');
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update video');
+      }
+      return data;
+    } catch (error) {
+      console.error('Error updating video:', error);
+      throw error;
     }
-    return data;
   }
 
   async deleteVideo(videoId) {
-    return this.request(`/videos/${videoId}`, { method: 'DELETE' });
+    try {
+      return await this.request(`/videos/${videoId}`, { method: 'DELETE' });
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      throw error;
+    }
   }
 
   // User APIs
@@ -122,123 +147,228 @@ class ApiService {
   }
 
   async login(credentials) {
-    return this.request('/users/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    });
+    try {
+      return await this.request('/users/login', {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+      });
+    } catch (error) {
+      console.error('Error logging in:', error);
+      throw error;
+    }
   }
 
   async logout() {
-    return this.request('/users/logout', { method: 'POST' });
+    try {
+      return await this.request('/users/logout', { method: 'POST' });
+    } catch (error) {
+      console.error('Error logging out:', error);
+      throw error;
+    }
   }
 
   async getCurrentUser() {
-    return this.request('/users/current-user');
+    try {
+      return await this.request('/users/current-user');
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      throw error;
+    }
   }
 
   async updateUserProfile(userData) {
-    const token = this.getAuthToken();
-    const url = `${this.baseURL}/users/update-account`;
-    
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(userData),
-    });
+    try {
+      const token = this.getAuthToken();
+      const url = `${this.baseURL}/users/update-account`;
+      
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(userData),
+      });
 
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || 'Failed to update profile');
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update profile');
+      }
+      return data;
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
     }
-    return data;
   }
 
   // Comment APIs
   async getVideoComments(videoId) {
-    return this.request(`/comments/${videoId}`);
+    try {
+      return await this.request(`/comments/${videoId}`);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      return { data: [] };
+    }
   }
 
   async addComment(videoId, content) {
-    return this.request('/comments', {
-      method: 'POST',
-      body: JSON.stringify({ videoId, content }),
-    });
+    try {
+      return await this.request('/comments', {
+        method: 'POST',
+        body: JSON.stringify({ videoId, content }),
+      });
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      throw error;
+    }
   }
 
   async updateComment(commentId, content) {
-    return this.request(`/comments/${commentId}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ content }),
-    });
+    try {
+      return await this.request(`/comments/${commentId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ content }),
+      });
+    } catch (error) {
+      console.error('Error updating comment:', error);
+      throw error;
+    }
   }
 
   async deleteComment(commentId) {
-    return this.request(`/comments/${commentId}`, { method: 'DELETE' });
+    try {
+      return await this.request(`/comments/${commentId}`, { method: 'DELETE' });
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      throw error;
+    }
   }
 
   // Like APIs
   async toggleVideoLike(videoId) {
-    return this.request(`/likes/toggle/v/${videoId}`, { method: 'POST' });
+    try {
+      return await this.request(`/likes/toggle/v/${videoId}`, { method: 'POST' });
+    } catch (error) {
+      console.error('Error toggling video like:', error);
+      throw error;
+    }
   }
 
   async toggleCommentLike(commentId) {
-    return this.request(`/likes/toggle/c/${commentId}`, { method: 'POST' });
+    try {
+      return await this.request(`/likes/toggle/c/${commentId}`, { method: 'POST' });
+    } catch (error) {
+      console.error('Error toggling comment like:', error);
+      throw error;
+    }
   }
 
   async getLikedVideos() {
-    return this.request('/likes/videos');
+    try {
+      return await this.request('/likes/videos');
+    } catch (error) {
+      console.error('Error getting liked videos:', error);
+      return { data: [] };
+    }
   }
 
   // Subscription APIs
   async subscribeToChannel(channelId) {
-    return this.request(`/subscriptions/${channelId}`, { method: 'POST' });
+    try {
+      return await this.request(`/subscriptions/${channelId}`, { method: 'POST' });
+    } catch (error) {
+      console.error('Error subscribing to channel:', error);
+      throw error;
+    }
   }
 
   async unsubscribeFromChannel(channelId) {
-    return this.request(`/subscriptions/${channelId}`, { method: 'DELETE' });
+    try {
+      return await this.request(`/subscriptions/${channelId}`, { method: 'DELETE' });
+    } catch (error) {
+      console.error('Error unsubscribing from channel:', error);
+      throw error;
+    }
   }
 
   async getSubscribedChannels() {
-    return this.request('/subscriptions/u');
+    try {
+      return await this.request('/subscriptions/u');
+    } catch (error) {
+      console.error('Error getting subscribed channels:', error);
+      return { data: [] };
+    }
   }
 
   // Playlist APIs
   async createPlaylist(playlistData) {
-    return this.request('/playlists', {
-      method: 'POST',
-      body: JSON.stringify(playlistData),
-    });
+    try {
+      return await this.request('/playlists', {
+        method: 'POST',
+        body: JSON.stringify(playlistData),
+      });
+    } catch (error) {
+      console.error('Error creating playlist:', error);
+      throw error;
+    }
   }
 
   async getUserPlaylists() {
-    return this.request('/playlists/user');
+    try {
+      return await this.request('/playlists/user');
+    } catch (error) {
+      console.error('Error getting user playlists:', error);
+      return { data: [] };
+    }
   }
 
   async getPlaylistById(playlistId) {
-    return this.request(`/playlists/${playlistId}`);
+    try {
+      return await this.request(`/playlists/${playlistId}`);
+    } catch (error) {
+      console.error('Error getting playlist:', error);
+      throw error;
+    }
   }
 
   async addVideoToPlaylist(playlistId, videoId) {
-    return this.request(`/playlists/${playlistId}/videos/${videoId}`, {
-      method: 'POST',
-    });
+    try {
+      return await this.request(`/playlists/${playlistId}/videos/${videoId}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      console.error('Error adding video to playlist:', error);
+      throw error;
+    }
   }
 
   async removeVideoFromPlaylist(playlistId, videoId) {
-    return this.request(`/playlists/${playlistId}/videos/${videoId}`, {
-      method: 'DELETE',
-    });
+    try {
+      return await this.request(`/playlists/${playlistId}/videos/${videoId}`, {
+        method: 'DELETE',
+      });
+    } catch (error) {
+      console.error('Error removing video from playlist:', error);
+      throw error;
+    }
   }
 
   // Dashboard APIs
   async getChannelStats() {
-    return this.request('/dashboard/stats');
+    try {
+      return await this.request('/dashboard/stats');
+    } catch (error) {
+      console.error('Error getting channel stats:', error);
+      return { data: {} };
+    }
   }
 
   async getChannelVideos() {
-    return this.request('/dashboard/videos');
+    try {
+      return await this.request('/dashboard/videos');
+    } catch (error) {
+      console.error('Error getting channel videos:', error);
+      return { data: [] };
+    }
   }
 }
 

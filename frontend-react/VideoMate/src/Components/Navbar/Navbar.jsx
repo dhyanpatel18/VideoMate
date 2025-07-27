@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import AuthModal from '../Auth/AuthModal';
+import VideoUpload from '../Upload/VideoUpload';
 
 const Navbar = ({ toggleSidebar, onSearch }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [showAuthModal, setShowAuthModal] = useState(false);
+    const [showUploadModal, setShowUploadModal] = useState(false);
     const navigate = useNavigate();
     const { user, logout, isAuthenticated } = useAuth();
 
@@ -66,7 +68,11 @@ const Navbar = ({ toggleSidebar, onSearch }) => {
                 <div className="nav-right flex-div">
                     {isAuthenticated ? (
                         <>
-                            <HiUpload className="nav-icon" title="Upload Video" />
+                            <HiUpload 
+                                className="nav-icon" 
+                                title="Upload Video" 
+                                onClick={() => setShowUploadModal(true)}
+                            />
                             <HiBell className="nav-icon" title="Notifications" />
                             <HiDotsVertical className="nav-icon" title="More" />
                             <div className="user-profile">
@@ -97,6 +103,11 @@ const Navbar = ({ toggleSidebar, onSearch }) => {
             <AuthModal 
                 isOpen={showAuthModal} 
                 onClose={() => setShowAuthModal(false)} 
+            />
+            
+            <VideoUpload 
+                isOpen={showUploadModal} 
+                onClose={() => setShowUploadModal(false)} 
             />
         </>
     );

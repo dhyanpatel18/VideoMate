@@ -83,7 +83,7 @@ const Recommended = () => {
         sortType: 'desc'
       });
       
-      if (response.data && response.data.videos) {
+      if (response && response.data && response.data.videos) {
         // Remove current video and shuffle
         const filteredVideos = response.data.videos.filter(video => video._id !== videoId);
         const shuffledVideos = shuffleArray(filteredVideos);

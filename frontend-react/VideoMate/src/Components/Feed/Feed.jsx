@@ -17,7 +17,7 @@ const Feed = ({ category, setCategory }) => {
         sortType: 'desc'
       });
       
-      if (response.data && response.data.videos) {
+      if (response && response.data && response.data.videos) {
         setData(response.data.videos);
       } else {
         console.error('No videos found in API response');
