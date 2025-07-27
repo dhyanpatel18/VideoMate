@@ -53,10 +53,10 @@ const AuthModal = ({ isOpen, onClose }) => {
           throw new Error('Passwords do not match');
         }
         
-        // Check if avatar is selected
-        if (!files.avatar) {
-          throw new Error('Avatar is required');
-        }
+        // Avatar is now optional for testing
+        // if (!files.avatar) {
+        //   throw new Error('Avatar is required');
+        // }
         
         // Create FormData for file upload
         const formDataToSend = new FormData();
@@ -64,8 +64,10 @@ const AuthModal = ({ isOpen, onClose }) => {
         formDataToSend.append('email', formData.email);
         formDataToSend.append('fullname', formData.fullname);
         formDataToSend.append('password', formData.password);
-        formDataToSend.append('avatar', files.avatar);
-        
+                if (files.avatar) {
+          formDataToSend.append('avatar', files.avatar);
+        }
+
         if (files.coverImage) {
           formDataToSend.append('coverImage', files.coverImage);
         }

@@ -20,7 +20,7 @@ const ChannelInfo = ({ channelId, channelData }) => {
     try {
       const response = await apiService.getSubscribedChannels();
       if (response && response.data) {
-        const subscribed = response.data.some(sub => sub.channel === channelId);
+        const subscribed = response.data.some(channel => channel._id === channelId);
         setIsSubscribed(subscribed);
       }
     } catch (error) {

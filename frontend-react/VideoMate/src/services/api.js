@@ -206,15 +206,15 @@ class ApiService {
       return await this.request(`/comments/${videoId}`);
     } catch (error) {
       console.error('Error fetching comments:', error);
-      return { data: [] };
+      return { data: { comments: [] } };
     }
   }
 
   async addComment(videoId, content) {
     try {
-      return await this.request('/comments', {
+      return await this.request(`/comments/${videoId}`, {
         method: 'POST',
-        body: JSON.stringify({ videoId, content }),
+        body: JSON.stringify({ content }),
       });
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -224,7 +224,7 @@ class ApiService {
 
   async updateComment(commentId, content) {
     try {
-      return await this.request(`/comments/${commentId}`, {
+      return await this.request(`/comments/c/${commentId}`, {
         method: 'PATCH',
         body: JSON.stringify({ content }),
       });
@@ -236,7 +236,7 @@ class ApiService {
 
   async deleteComment(commentId) {
     try {
-      return await this.request(`/comments/${commentId}`, { method: 'DELETE' });
+      return await this.request(`/comments/c/${commentId}`, { method: 'DELETE' });
     } catch (error) {
       console.error('Error deleting comment:', error);
       throw error;
@@ -274,7 +274,7 @@ class ApiService {
   // Subscription APIs
   async subscribeToChannel(channelId) {
     try {
-      return await this.request(`/subscriptions/${channelId}`, { method: 'POST' });
+      return await this.request(`/subscriptions/${channelId}/toggle`, { method: 'POST' });
     } catch (error) {
       console.error('Error subscribing to channel:', error);
       throw error;
@@ -283,7 +283,7 @@ class ApiService {
 
   async unsubscribeFromChannel(channelId) {
     try {
-      return await this.request(`/subscriptions/${channelId}`, { method: 'DELETE' });
+      return await this.request(`/subscriptions/${channelId}/toggle`, { method: 'POST' });
     } catch (error) {
       console.error('Error unsubscribing from channel:', error);
       throw error;
@@ -292,7 +292,12 @@ class ApiService {
 
   async getSubscribedChannels() {
     try {
-      return await this.request('/subscriptions/u');
+      // Get current user first to get their ID
+      const userResponse = await this.getCurrentUser();
+      if (userResponse && userResponse.data && userResponse.data._id) {
+        return await this.request(`/subscriptions/${userResponse.data._id}/subscribed`);
+      }
+      return { data: [] };
     } catch (error) {
       console.error('Error getting subscribed channels:', error);
       return { data: [] };

@@ -37,40 +37,36 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "Username or email already exists");
   }
 
-  const avatarLocalPath = req.files?.avatar[0]?.path;
-  let coverImageLocalPath;
-  if (
-    req.files &&
-    Array.isArray(req.files.coverImage) &&
-    req.files.coverImage.length > 0
-  ) {
-    coverImageLocalPath = req.files.coverImage[0].path;
+  // Temporary fix for testing without Cloudinary
+  let avatarUrl = "https://via.placeholder.com/150x150/065fd4/ffffff?text=User";
+  let coverImageUrl = "";
+  
+  if (req.files?.avatar?.[0]?.path) {
+    try {
+      const avatar = await uploadOnCloudinary(req.files.avatar[0].path);
+      if (avatar) {
+        avatarUrl = avatar.url;
+      }
+    } catch (error) {
+      console.error("Avatar upload failed:", error);
+    }
   }
 
-  if (!avatarLocalPath) {
-    throw new ApiError(400, "Avatar is required");
-  }
-
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-
-  if (!avatar) {
-    throw new ApiError(400, "Avatar upload failed");
-  }
-
-  let coverImage;
-  if (!coverImageLocalPath) {
-    console.log("No cover image found in request.");
-  } else {
-    coverImage = await uploadOnCloudinary(coverImageLocalPath);
-    if (!coverImage) {
-      console.error("Cover image upload failed.");
+  if (req.files?.coverImage?.[0]?.path) {
+    try {
+      const coverImage = await uploadOnCloudinary(req.files.coverImage[0].path);
+      if (coverImage) {
+        coverImageUrl = coverImage.url;
+      }
+    } catch (error) {
+      console.error("Cover image upload failed:", error);
     }
   }
 
   const user = await User.create({
     fullname,
-    avatar: avatar.url,
-    coverImage: coverImage?.url || "",
+    avatar: avatarUrl,
+    coverImage: coverImageUrl,
     email,
     password,
     username: username.toLowerCase(),

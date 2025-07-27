@@ -23,8 +23,8 @@ const CommentSection = ({ videoId }) => {
       setLoading(true);
       setError('');
       const response = await apiService.getVideoComments(videoId);
-      if (response && response.data) {
-        setComments(response.data);
+      if (response && response.data && response.data.comments) {
+        setComments(response.data.comments);
       } else {
         setComments([]);
       }
@@ -45,7 +45,11 @@ const CommentSection = ({ videoId }) => {
       setError('');
       const response = await apiService.addComment(videoId, newComment);
       if (response && response.data) {
-        setComments(prev => [response.data, ...prev]);
+        // Fetch the updated comment with populated owner data
+        const updatedComment = await apiService.getVideoComments(videoId);
+        if (updatedComment && updatedComment.data && updatedComment.data.comments) {
+          setComments(updatedComment.data.comments);
+        }
         setNewComment('');
       }
     } catch (error) {

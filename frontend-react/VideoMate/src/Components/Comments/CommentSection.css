@@ -1,23 +1,25 @@
 .comment-section {
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #333;
+  color: #fff;
 }
 
 .comment-section h3 {
   margin-bottom: 1.5rem;
-  color: #333;
+  color: #fff;
   font-size: 1.2rem;
   font-weight: 600;
 }
 
 .error-message {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: #2d1b1b;
+  color: #ff6b6b;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
+  border: 1px solid #ff6b6b;
 }
 
 /* Add Comment Form */
@@ -46,16 +48,22 @@
 .comment-input {
   flex: 1;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #444;
   border-radius: 20px;
   font-size: 1rem;
   outline: none;
   transition: border-color 0.3s ease;
+  background: #2a2a2a;
+  color: #fff;
 }
 
 .comment-input:focus {
   border-color: #065fd4;
-  box-shadow: 0 0 0 2px rgba(6, 95, 212, 0.1);
+  box-shadow: 0 0 0 2px rgba(6, 95, 212, 0.2);
+}
+
+.comment-input::placeholder {
+  color: #aaa;
 }
 
 .comment-submit {
@@ -77,7 +85,7 @@
 }
 
 .comment-submit:disabled {
-  background: #ccc;
+  background: #444;
   cursor: not-allowed;
   transform: none;
 }
@@ -116,18 +124,18 @@
 
 .comment-author {
   font-weight: 600;
-  color: #333;
+  color: #fff;
   font-size: 0.9rem;
 }
 
 .comment-date {
-  color: #666;
+  color: #aaa;
   font-size: 0.8rem;
 }
 
 .comment-text {
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: #ccc;
   line-height: 1.5;
   word-wrap: break-word;
 }
@@ -148,11 +156,11 @@
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #666;
+  color: #aaa;
 }
 
 .like-btn:hover {
-  background: #f0f0f0;
+  background: #333;
   color: #065fd4;
 }
 
@@ -162,13 +170,13 @@
 }
 
 .edit-btn:hover {
-  background: #f0f0f0;
+  background: #333;
   color: #065fd4;
 }
 
 .delete-btn:hover {
-  background: #ffebee;
-  color: #c62828;
+  background: #2d1b1b;
+  color: #ff6b6b;
 }
 
 /* Edit Comment */
@@ -179,16 +187,18 @@
 .edit-input {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #444;
   border-radius: 8px;
   font-size: 0.9rem;
   outline: none;
   margin-bottom: 0.5rem;
+  background: #2a2a2a;
+  color: #fff;
 }
 
 .edit-input:focus {
   border-color: #065fd4;
-  box-shadow: 0 0 0 2px rgba(6, 95, 212, 0.1);
+  box-shadow: 0 0 0 2px rgba(6, 95, 212, 0.2);
 }
 
 .edit-actions {
@@ -215,12 +225,12 @@
 }
 
 .cancel-btn {
-  background: #f0f0f0;
-  color: #666;
+  background: #444;
+  color: #ccc;
 }
 
 .cancel-btn:hover {
-  background: #e0e0e0;
+  background: #555;
 }
 
 /* Loading Skeleton */
@@ -240,7 +250,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
 }
@@ -254,7 +264,7 @@
 
 .skeleton-line {
   height: 12px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   border-radius: 4px;
@@ -277,7 +287,7 @@
 .no-comments {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: #aaa;
 }
 
 .no-comments p {

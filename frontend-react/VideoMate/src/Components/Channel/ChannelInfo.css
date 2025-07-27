@@ -1,9 +1,10 @@
 .channel-info {
   margin: 2rem 0;
   padding: 1.5rem;
-  background: #f8f9fa;
+  background: #1a1a1a;
   border-radius: 12px;
-  border: 1px solid #e9ecef;
+  border: 1px solid #333;
+  color: #fff;
 }
 
 .channel-header {
@@ -30,18 +31,18 @@
   margin: 0 0 0.25rem 0;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: #fff;
 }
 
 .channel-username {
   margin: 0 0 0.25rem 0;
-  color: #666;
+  color: #aaa;
   font-size: 0.9rem;
 }
 
 .subscriber-count {
   margin: 0;
-  color: #666;
+  color: #aaa;
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -75,19 +76,20 @@
 }
 
 .subscribe-button:disabled {
-  background: #ccc;
+  background: #444;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
 .error-message {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: #2d1b1b;
+  color: #ff6b6b;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
+  border: 1px solid #ff6b6b;
 }
 
 .channel-cover {
@@ -108,14 +110,14 @@
 
 .channel-description h4 {
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: #fff;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
 .channel-description p {
   margin: 0;
-  color: #666;
+  color: #ccc;
   line-height: 1.6;
   white-space: pre-wrap;
 }
@@ -131,7 +133,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   flex-shrink: 0;
@@ -146,7 +148,7 @@
 
 .skeleton-line {
   height: 16px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   border-radius: 4px;
