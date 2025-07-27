@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './Feed.css';
 import { Link } from "react-router-dom";
-import { API_KEY } from "../../data.js";
+import apiService from "../../services/api";
 
 const Feed = ({ category, setCategory }) => {
   const [data, setData] = useState([]);
@@ -10,15 +10,17 @@ const Feed = ({ category, setCategory }) => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const videoList_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=50&regionCode=IN&videoCategoryId=${category}&key=${API_KEY}`;
+      const response = await apiService.getAllVideos({
+        page: 1,
+        limit: 50,
+        sortBy: 'createdAt',
+        sortType: 'desc'
+      });
       
-      const response = await fetch(videoList_url);
-      const result = await response.json();
-      
-      if (result.items) {
-        setData(result.items);
+      if (response.data && response.data.videos) {
+        setData(response.data.videos);
       } else {
-        console.error('No items found in API response');
+        console.error('No videos found in API response');
         setData([]);
       }
     } catch (error) {
@@ -35,6 +37,7 @@ const Feed = ({ category, setCategory }) => {
 
   // Helper function to format view count
   const formatViewCount = (viewCount) => {
+    if (!viewCount) return '0';
     if (viewCount >= 1000000) {
       return Math.floor(viewCount / 1000000) + 'M';
     } else if (viewCount >= 1000) {
@@ -46,6 +49,7 @@ const Feed = ({ category, setCategory }) => {
 
   // Helper function to format published date
   const formatPublishedDate = (publishedAt) => {
+    if (!publishedAt) return 'Unknown';
     const now = new Date();
     const published = new Date(publishedAt);
     const diffTime = Math.abs(now - published);
@@ -88,21 +92,21 @@ const Feed = ({ category, setCategory }) => {
     <div className="feed">
       {data.map((item) => (
         <Link 
-          to={`/video/${item.snippet.categoryId}/${item.id}`} 
-          key={item.id} 
+          to={`/video/${item._id}`} 
+          key={item._id} 
           className="card"
         >
           <img 
-            src={item.snippet.thumbnails.medium.url} 
-            alt={item.snippet.title}
+            src={item.thumbnail} 
+            alt={item.title}
             onError={(e) => {
               e.target.src = '/assets/thumbnail1.png'; // Fallback image
             }}
           />
-          <h2>{item.snippet.title}</h2>
-          <h3>{item.snippet.channelTitle}</h3>
+          <h2>{item.title}</h2>
+          <h3>{item.owner?.fullname || item.owner?.username || 'Unknown User'}</h3>
           <p>
-            {formatViewCount(item.statistics.viewCount)} views &bull; {formatPublishedDate(item.snippet.publishedAt)}
+            {formatViewCount(item.views)} views &bull; {formatPublishedDate(item.createdAt)}
           </p>
         </Link>
       ))}

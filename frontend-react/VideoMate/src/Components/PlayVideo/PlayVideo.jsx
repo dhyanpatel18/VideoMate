@@ -8,7 +8,7 @@ import save from '/assets/save.png';
 import jack from '/assets/jack.png';
 import user_profile from '/assets/user_profile.jpg';
 import { useParams } from "react-router-dom";
-import { API_KEY } from "../../data.js"; // Your YouTube API key
+import apiService from "../../services/api";
 
 const PlayVideo = () => {
   const { videoId } = useParams(); // Get videoId from URL
@@ -19,6 +19,7 @@ const PlayVideo = () => {
 
   // Helper function to format view count
   const formatViewCount = (viewCount) => {
+    if (!viewCount) return '0';
     if (viewCount >= 1000000) {
       return Math.floor(viewCount / 1000000) + 'M';
     } else if (viewCount >= 1000) {
@@ -30,6 +31,7 @@ const PlayVideo = () => {
 
   // Helper function to format published date
   const formatPublishedDate = (publishedAt) => {
+    if (!publishedAt) return 'Unknown';
     const now = new Date();
     const published = new Date(publishedAt);
     const diffTime = Math.abs(now - published);
@@ -54,23 +56,10 @@ const PlayVideo = () => {
   // Fetch video data
   const fetchVideoData = async () => {
     try {
-      // Fetch video details
-      const videoUrl = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${API_KEY}`;
-      const videoResponse = await fetch(videoUrl);
-      const videoResult = await videoResponse.json();
-      
-      if (videoResult.items && videoResult.items.length > 0) {
-        const video = videoResult.items[0];
-        setApiData(video);
-        
-        // Fetch channel data using channelId from video
-        const channelUrl = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2Cstatistics&id=${video.snippet.channelId}&key=${API_KEY}`;
-        const channelResponse = await fetch(channelUrl);
-        const channelResult = await channelResponse.json();
-        
-        if (channelResult.items && channelResult.items.length > 0) {
-          setChannelData(channelResult.items[0]);
-        }
+      const response = await apiService.getVideoById(videoId);
+      if (response.data) {
+        setApiData(response.data);
+        setChannelData(response.data.owner);
       }
     } catch (error) {
       console.error('Error fetching video data:', error);
@@ -80,12 +69,9 @@ const PlayVideo = () => {
   // Fetch comments
   const fetchCommentData = async () => {
     try {
-      const commentUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&maxResults=50&videoId=${videoId}&key=${API_KEY}`;
-      const commentResponse = await fetch(commentUrl);
-      const commentResult = await commentResponse.json();
-      
-      if (commentResult.items) {
-        setCommentData(commentResult.items);
+      const response = await apiService.getVideoComments(videoId);
+      if (response.data) {
+        setCommentData(response.data);
       }
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -130,26 +116,28 @@ const PlayVideo = () => {
 
   return (
     <div className="play-video">
-        {/* YouTube iframe with proper styling */}
-        <iframe 
+        {/* Video player */}
+        <video 
           className="video-player"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-          title="YouTube video player"
-          allow="autoplay; clipboard-write; picture-in-picture; web-share"
-          allowFullScreen
-        ></iframe>
+          controls
+          src={apiData.videoFile}
+          poster={apiData.thumbnail}
+          title={apiData.title}
+        >
+          Your browser does not support the video tag.
+        </video>
         
         {/* Dynamic video title */}
-        <h3>{apiData.snippet.title}</h3>
+        <h3>{apiData.title}</h3>
         
         <div className="play-video-info">
             <p>
-              {formatViewCount(apiData.statistics.viewCount)} views &bull; {formatPublishedDate(apiData.snippet.publishedAt)}
+              {formatViewCount(apiData.views)} views &bull; {formatPublishedDate(apiData.createdAt)}
             </p>
             <div className="like-dislike">
              <span>
                <img src={like} alt="like" className="like-icon" />
-               {apiData.statistics.likeCount ? formatViewCount(apiData.statistics.likeCount) : 'Like'}
+               {apiData.likes ? formatViewCount(apiData.likes) : 'Like'}
              </span>  
              <span><img src={dislike} alt="dislike" className="dislike-icon" />Dislike</span>
              <span><img src={share} alt="share" className="share-icon" />Share</span>
@@ -161,24 +149,19 @@ const PlayVideo = () => {
         
         <div className="publisher">
             <img 
-              src={channelData?.snippet?.thumbnails?.default?.url || jack} 
-              alt={channelData?.snippet?.title || "Channel"} 
+              src={channelData?.avatar || jack} 
+              alt={channelData?.fullname || channelData?.username || "Channel"} 
               className="publisher-image" 
             />
             <div>
-                <p>{channelData?.snippet?.title || apiData.snippet.channelTitle}</p>
-                <p>
-                  {channelData?.statistics?.subscriberCount 
-                    ? `${formatViewCount(channelData.statistics.subscriberCount)} subscribers`
-                    : 'Subscribers not available'
-                  }
-                </p>
+                <p>{channelData?.fullname || channelData?.username || 'Unknown User'}</p>
+                <p>Channel</p>
             </div>
             <button className="subscribe-button">Subscribe</button>
         </div>
         
         <div className="video-description">
-            <p>{apiData.snippet.description || 'No description available'}</p>
+            <p>{apiData.description || 'No description available'}</p>
         </div>
         
         <hr />
@@ -195,16 +178,16 @@ const PlayVideo = () => {
             {commentData.map((comment, index) => (
               <div key={index} className="comment-item">
                   <img 
-                    src={comment.snippet.topLevelComment.snippet.authorProfileImageUrl || user_profile} 
+                    src={comment.owner?.avatar || user_profile} 
                     alt="user" 
                     className="comment-user-profile" 
                   />
                   <div className="comment-content">
                       <p className="comment-author">
-                        {comment.snippet.topLevelComment.snippet.authorDisplayName}
+                        {comment.owner?.fullname || comment.owner?.username || 'Unknown User'}
                       </p>
                       <p className="comment-text">
-                        {comment.snippet.topLevelComment.snippet.textDisplay}
+                        {comment.content}
                       </p>
                   </div>
               </div>

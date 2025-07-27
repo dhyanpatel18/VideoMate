@@ -196,6 +196,65 @@ nav {
     transform: scale(1.05);
 }
 
+/* User Profile Styles */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    background: var(--bg-tertiary);
+    transition: all 0.2s ease;
+}
+
+.user-profile:hover {
+    background: var(--bg-secondary);
+}
+
+.profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-color);
+}
+
+.username {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.logout-icon {
+    color: var(--text-secondary);
+    font-size: 18px;
+}
+
+.logout-icon:hover {
+    color: #ff5252;
+}
+
+.login-button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.login-button:hover {
+    background: var(--accent-hover);
+    transform: scale(1.05);
+}
+
 /* Enhanced Responsive Design */
 @media (max-width: 1200px) {
     nav {

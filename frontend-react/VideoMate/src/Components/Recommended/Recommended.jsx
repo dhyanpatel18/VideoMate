@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import './Recommended.css';
 import { useParams, Link } from "react-router-dom";
-import { API_KEY } from "../../data.js";
+import apiService from "../../services/api";
 
 const Recommended = () => {
-  const { videoId, categoryId } = useParams();
+  const { videoId } = useParams();
   const [recommendedVideos, setRecommendedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [randomSeed, setRandomSeed] = useState(0);
@@ -38,6 +38,7 @@ const Recommended = () => {
   };
 
   const formatViewCount = (viewCount) => {
+    if (!viewCount) return '0';
     if (viewCount >= 1000000) {
       return Math.floor(viewCount / 1000000) + 'M';
     } else if (viewCount >= 1000) {
@@ -48,6 +49,7 @@ const Recommended = () => {
   };
 
   const formatPublishedDate = (publishedAt) => {
+    if (!publishedAt) return 'Unknown';
     const now = new Date();
     const published = new Date(publishedAt);
     const diffTime = Math.abs(now - published);
@@ -69,119 +71,45 @@ const Recommended = () => {
     }
   };
 
-  // Enhanced multi-category recommendations
-  const fetchEnhancedRecommendations = async () => {
+  // Fetch recommended videos
+  const fetchRecommendedVideos = async () => {
     try {
       setLoading(true);
       
-      const numCategoryId = parseInt(categoryId);
-      const relatedCategories = recommendationGroups[numCategoryId] || [numCategoryId];
-      
-      // Randomly select 2-3 categories for variety
-      const selectedCategories = shuffleArray(relatedCategories).slice(0, 3);
-      
-      const allVideos = [];
-      const fetchPromises = [];
-
-      // Fetch from multiple related categories
-      for (const cat of selectedCategories) {
-        const promise = fetch(
-          `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2Cstatistics&chart=mostPopular&maxResults=20&regionCode=IN&videoCategoryId=${cat}&key=${API_KEY}`
-        )
-        .then(response => response.json())
-        .then(result => {
-          if (result.items) {
-            return result.items.map(item => ({
-              ...item,
-              recommendationCategory: cat,
-              relevanceScore: cat === numCategoryId ? 3 : (relatedCategories.indexOf(cat) === 0 ? 2 : 1)
-            }));
-          }
-          return [];
-        })
-        .catch(error => {
-          console.error(`Error fetching recommendation category ${cat}:`, error);
-          return [];
-        });
-
-        fetchPromises.push(promise);
-      }
-
-      const categoryResults = await Promise.all(fetchPromises);
-      
-      // Combine results
-      categoryResults.forEach(videos => {
-        allVideos.push(...videos);
+      const response = await apiService.getAllVideos({
+        page: 1,
+        limit: 25,
+        sortBy: 'createdAt',
+        sortType: 'desc'
       });
-
-      if (allVideos.length > 0) {
-        // Remove current video and duplicates
-        const filteredVideos = allVideos.filter((video, index, self) => 
-          video.id !== videoId && 
-          index === self.findIndex(v => v.id === video.id)
-        );
-
-        // Sort by relevance and shuffle within groups
-        const highRelevance = filteredVideos.filter(v => v.relevanceScore === 3);
-        const mediumRelevance = filteredVideos.filter(v => v.relevanceScore === 2);
-        const lowRelevance = filteredVideos.filter(v => v.relevanceScore === 1);
-
-        // Create mixed recommendations with weighted distribution
-        const mixedRecommendations = [
-          ...shuffleArray(highRelevance).slice(0, 15),
-          ...shuffleArray(mediumRelevance).slice(0, 8),
-          ...shuffleArray(lowRelevance).slice(0, 5)
-        ];
-
-        // Final shuffle and limit
-        const finalRecommendations = shuffleArray(mixedRecommendations).slice(0, 25);
-        setRecommendedVideos(finalRecommendations);
-      } else {
-        // Fallback to single category
-        await fetchSingleCategoryRecommendations();
-      }
-    } catch (error) {
-      console.error('Error fetching enhanced recommendations:', error);
-      await fetchSingleCategoryRecommendations();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fallback single category recommendations
-  const fetchSingleCategoryRecommendations = async () => {
-    try {
-      const apiUrl = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2Cstatistics&chart=mostPopular&maxResults=50&regionCode=IN&videoCategoryId=${categoryId}&key=${API_KEY}`;
       
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      
-      if (data.items) {
-        const filteredVideos = data.items.filter(video => video.id !== videoId);
+      if (response.data && response.data.videos) {
+        // Remove current video and shuffle
+        const filteredVideos = response.data.videos.filter(video => video._id !== videoId);
         const shuffledVideos = shuffleArray(filteredVideos);
-        const randomStart = Math.floor(Math.random() * Math.max(1, shuffledVideos.length - 25));
-        const randomVideos = shuffledVideos.slice(randomStart, randomStart + 25);
-        setRecommendedVideos(shuffleArray(randomVideos));
+        setRecommendedVideos(shuffledVideos.slice(0, 25));
       } else {
         setRecommendedVideos([]);
       }
     } catch (error) {
-      console.error('Error in fallback recommendations:', error);
+      console.error('Error fetching recommendations:', error);
       setRecommendedVideos([]);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Manual refresh for recommendations
   const handleRefreshRecommendations = () => {
     setRandomSeed(Math.random());
-    fetchEnhancedRecommendations();
+    fetchRecommendedVideos();
   };
 
   useEffect(() => {
-    if (videoId && categoryId) {
-      fetchEnhancedRecommendations();
+    if (videoId) {
+      fetchRecommendedVideos();
     }
-  }, [videoId, categoryId]);
+  }, [videoId]);
 
   useEffect(() => {
     setRandomSeed(Math.random());
@@ -220,22 +148,22 @@ const Recommended = () => {
       <div className="recommended-videos">
         {recommendedVideos.map((video, index) => (
           <Link 
-            key={`${video.id}-${randomSeed}-${index}`}
-            to={`/video/${video.snippet.categoryId}/${video.id}`}
+            key={`${video._id}-${randomSeed}-${index}`}
+            to={`/video/${video._id}`}
             className="video-card"
           >
             <img 
-              src={video.snippet.thumbnails.medium?.url || video.snippet.thumbnails.default?.url} 
-              alt={video.snippet.title}
+              src={video.thumbnail} 
+              alt={video.title}
               onError={(e) => {
                 e.target.src = '/assets/thumbnail1.png';
               }}
             />
             <div className="video-info">
-              <h3>{video.snippet.title}</h3>
-              <p>{video.snippet.channelTitle}</p>
+              <h3>{video.title}</h3>
+              <p>{video.owner?.fullname || video.owner?.username || 'Unknown User'}</p>
               <p>
-                {formatViewCount(video.statistics.viewCount)} views • {formatPublishedDate(video.snippet.publishedAt)}
+                {formatViewCount(video.views)} views • {formatPublishedDate(video.createdAt)}
               </p>
             </div>
           </Link>
