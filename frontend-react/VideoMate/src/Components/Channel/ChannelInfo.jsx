@@ -5,7 +5,7 @@ import './ChannelInfo.css';
 
 const ChannelInfo = ({ channelId, channelData }) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [subscriberCount, setSubscriberCount] = useState(0);
+  const [subscriberCount, setSubscriberCount] = useState(channelData?.subscriberCount || 0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { user, isAuthenticated } = useAuth();
@@ -14,7 +14,12 @@ const ChannelInfo = ({ channelId, channelData }) => {
     if (channelId && isAuthenticated) {
       checkSubscriptionStatus();
     }
-  }, [channelId, isAuthenticated]);
+    // Update subscriber count when channelData changes
+    if (channelData?.subscriberCount !== undefined) {
+      console.log('ChannelInfo: Setting subscriber count to:', channelData.subscriberCount);
+      setSubscriberCount(channelData.subscriberCount);
+    }
+  }, [channelId, isAuthenticated, channelData]);
 
   const checkSubscriptionStatus = async () => {
     try {
@@ -39,13 +44,21 @@ const ChannelInfo = ({ channelId, channelData }) => {
       setError('');
 
       if (isSubscribed) {
-        await apiService.unsubscribeFromChannel(channelId);
+        const response = await apiService.unsubscribeFromChannel(channelId);
         setIsSubscribed(false);
-        setSubscriberCount(prev => Math.max(0, prev - 1));
+        // Update subscriber count from response
+        if (response && response.data && response.data.subscriberCount !== undefined) {
+          console.log('ChannelInfo: Updated subscriber count to:', response.data.subscriberCount);
+          setSubscriberCount(response.data.subscriberCount);
+        }
       } else {
-        await apiService.subscribeToChannel(channelId);
+        const response = await apiService.subscribeToChannel(channelId);
         setIsSubscribed(true);
-        setSubscriberCount(prev => prev + 1);
+        // Update subscriber count from response
+        if (response && response.data && response.data.subscriberCount !== undefined) {
+          console.log('ChannelInfo: Updated subscriber count to:', response.data.subscriberCount);
+          setSubscriberCount(response.data.subscriberCount);
+        }
       }
     } catch (error) {
       setError(error.message || 'Failed to update subscription');

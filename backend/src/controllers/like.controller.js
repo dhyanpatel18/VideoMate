@@ -1,5 +1,6 @@
 import mongoose, {isValidObjectId} from "mongoose"
 import {Like} from "../models/like.models.js"
+import {Video} from "../models/video.models.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
@@ -14,10 +15,24 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     const existing = await Like.findOne({ video: videoId, likedBy });
     if (existing) {
         await existing.deleteOne();
-        return res.status(200).json(new ApiResponse(200, {}, 'Video unliked'));
+        // Decrease like count
+        const updatedVideo = await Video.findByIdAndUpdate(
+            videoId, 
+            { $inc: { likes: -1 } },
+            { new: true }
+        );
+        console.log('Video unliked, new like count:', updatedVideo.likes);
+        return res.status(200).json(new ApiResponse(200, { likes: updatedVideo.likes }, 'Video unliked'));
     } else {
         await Like.create({ video: videoId, likedBy });
-        return res.status(200).json(new ApiResponse(200, {}, 'Video liked'));
+        // Increase like count
+        const updatedVideo = await Video.findByIdAndUpdate(
+            videoId, 
+            { $inc: { likes: 1 } },
+            { new: true }
+        );
+        console.log('Video liked, new like count:', updatedVideo.likes);
+        return res.status(200).json(new ApiResponse(200, { likes: updatedVideo.likes }, 'Video liked'));
     }
 });
 

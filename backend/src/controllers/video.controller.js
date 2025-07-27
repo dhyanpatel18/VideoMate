@@ -26,7 +26,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
         .sort(sort)
         .skip(skip)
         .limit(parseInt(limit))
-        .populate('owner', 'username fullname avatar');
+        .populate('owner', 'username fullname avatar subscriberCount');
     const total = await Video.countDocuments(match);
     return res.status(200).json(new ApiResponse(200, { videos, total, page: parseInt(page), limit: parseInt(limit) }, 'Videos fetched successfully'));
 });
@@ -67,7 +67,7 @@ const getVideoById = asyncHandler(async (req, res) => {
     if (!isValidObjectId(videoId)) {
         throw new ApiError(400, 'Invalid video id');
     }
-    const video = await Video.findById(videoId).populate('owner', 'username fullname avatar');
+    const video = await Video.findById(videoId).populate('owner', 'username fullname avatar subscriberCount');
     if (!video) {
         throw new ApiError(404, 'Video not found');
     }

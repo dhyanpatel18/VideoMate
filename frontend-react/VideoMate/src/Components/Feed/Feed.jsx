@@ -89,7 +89,7 @@ const Feed = ({ category, setCategory }) => {
   }
 
   return (
-    <div className="feed">
+    <div className="feed" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
       {data.map((item) => (
         <Link 
           to={`/video/${item._id}`} 

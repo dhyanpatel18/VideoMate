@@ -85,9 +85,16 @@ const PlayVideo = () => {
     }
 
     try {
-      await apiService.toggleVideoLike(videoId);
+      const response = await apiService.toggleVideoLike(videoId);
       setIsLiked(!isLiked);
-      setLikeCount(prev => isLiked ? Math.max(0, prev - 1) : prev + 1);
+      
+      // Update like count from response
+      if (response && response.data && response.data.likes !== undefined) {
+        setLikeCount(response.data.likes);
+      } else {
+        // Fallback: refresh video data
+        await fetchVideoData();
+      }
     } catch (error) {
       console.error('Error toggling like:', error);
     }

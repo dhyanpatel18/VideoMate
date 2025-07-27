@@ -10,6 +10,8 @@ import {asyncHandler} from "../utils/asyncHandler.js"
 const toggleSubscription = asyncHandler(async (req, res) => {
     const { channelId } = req.params;
     const subscriberId = req.user?._id;
+    console.log('Subscription Controller: channelId:', channelId, 'subscriberId:', subscriberId);
+    
     if (!isValidObjectId(channelId)) {
         throw new ApiError(400, 'Invalid channel id');
     }
@@ -23,10 +25,24 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     const existing = await Subscription.findOne({ channel: channelId, subscriber: subscriberId });
     if (existing) {
         await existing.deleteOne();
-        return res.status(200).json(new ApiResponse(200, {}, 'Unsubscribed successfully'));
+        // Decrease subscriber count
+        const updatedUser = await User.findByIdAndUpdate(
+            channelId, 
+            { $inc: { subscriberCount: -1 } },
+            { new: true }
+        );
+        console.log('Unsubscribed, new subscriber count:', updatedUser.subscriberCount);
+        return res.status(200).json(new ApiResponse(200, { subscriberCount: updatedUser.subscriberCount }, 'Unsubscribed successfully'));
     } else {
         await Subscription.create({ channel: channelId, subscriber: subscriberId });
-        return res.status(200).json(new ApiResponse(200, {}, 'Subscribed successfully'));
+        // Increase subscriber count
+        const updatedUser = await User.findByIdAndUpdate(
+            channelId, 
+            { $inc: { subscriberCount: 1 } },
+            { new: true }
+        );
+        console.log('Subscribed, new subscriber count:', updatedUser.subscriberCount);
+        return res.status(200).json(new ApiResponse(200, { subscriberCount: updatedUser.subscriberCount }, 'Subscribed successfully'));
     }
 });
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {

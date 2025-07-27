@@ -274,7 +274,10 @@ class ApiService {
   // Subscription APIs
   async subscribeToChannel(channelId) {
     try {
-      return await this.request(`/subscriptions/${channelId}/toggle`, { method: 'POST' });
+      console.log('API: Subscribing to channel:', channelId);
+      const response = await this.request(`/subscriptions/${channelId}/toggle`, { method: 'POST' });
+      console.log('API: Subscribe response:', response);
+      return response;
     } catch (error) {
       console.error('Error subscribing to channel:', error);
       throw error;
@@ -283,7 +286,10 @@ class ApiService {
 
   async unsubscribeFromChannel(channelId) {
     try {
-      return await this.request(`/subscriptions/${channelId}/toggle`, { method: 'POST' });
+      console.log('API: Unsubscribing from channel:', channelId);
+      const response = await this.request(`/subscriptions/${channelId}/toggle`, { method: 'POST' });
+      console.log('API: Unsubscribe response:', response);
+      return response;
     } catch (error) {
       console.error('Error unsubscribing from channel:', error);
       throw error;
